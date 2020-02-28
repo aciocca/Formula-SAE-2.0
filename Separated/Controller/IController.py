@@ -30,7 +30,7 @@ class IController:
         self.initializeGlobalVariables()
         # Virtually private constructor.
         if IController.__instance is not None:
-            raise Exception("This class is a singleton!")
+            print("This class is a singleton!")
         else:
             IController.__instance = self
 
