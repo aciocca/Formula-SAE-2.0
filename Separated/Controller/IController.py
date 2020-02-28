@@ -52,7 +52,10 @@ class IController:
             for elem in list(self.q100.queue):
                 data = data + elem
                 items = items + 1
-        return (data/items)
+            quant=data/items
+        else:
+            quant=-1
+        return quant
 
     def q100HzFull(self):
         return self.q100.full()
@@ -67,13 +70,16 @@ class IController:
         # da fare la media dei primi 10 valori della queue
         data = 0
         items = 0
-        if not self.q100.empty():
+        if not self.q10.empty():
             # il "listing" e' un'operazione atomica quindi NON DOVREBBE
             # bloccare il thread
             for elem in list(self.q10.queue):
                 data = data + elem
                 items = items + 1
-        return (data/items)
+            quant=data/items
+        else:
+            quant=-1
+        return quant
 
     def q10HzFull(self):
         return self.q10.full()
