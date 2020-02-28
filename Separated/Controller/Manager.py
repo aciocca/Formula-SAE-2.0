@@ -11,8 +11,3 @@ class Manager:
         print('Getting ' + str(self.myInstance.get100HzData()) + ' from 100Hz buffered queue\n')
         print('Getting ' + str(self.myInstance.get10HzData()) + ' from 10Hz buffered queue\n')
         print('Getting ' + str(self.myInstance.get4HzData()) + ' from 4Hz buffered queue\n')
-
-    def list(self):
-        print('Getting ' + str(IController.getInstance().list100()) + ' \n')
-        print('Getting ' + str(IController.getInstance().list10()) + ' \n')
-        print('Getting ' + str(IController.getInstance().list4()) + ' \n')
