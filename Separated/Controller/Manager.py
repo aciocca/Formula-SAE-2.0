@@ -1,12 +1,16 @@
 from Controller import IController
-
+from Model import Writer
 class Manager:
-    def consume(self):
+    def __init__(self):
         myController = IController.IController()
-        myInstance = myController.getInstance()
-        print('Getting ' + str(myInstance.get100HzData()) + ' from 100Hz buffered queue\n')
-        print('Getting ' + str(myInstance.get10HzData()) + ' from 10Hz buffered queue\n')
-        print('Getting ' + str(myInstance.get4HzData()) + ' from 4Hz buffered queue\n')
+        self.myInstance = myController.getInstance()
+        self.w=Writer.WriterThread(name="Stocazzo",instance=self.myInstance)
+        self.w.start()
+    def consume(self):
+        self.myInstance.getInstance()
+        print('Getting ' + str(self.myInstance.get100HzData()) + ' from 100Hz buffered queue\n')
+        print('Getting ' + str(self.myInstance.get10HzData()) + ' from 10Hz buffered queue\n')
+        print('Getting ' + str(self.myInstance.get4HzData()) + ' from 4Hz buffered queue\n')
 
     def list(self):
         print('Getting ' + str(IController.getInstance().list100()) + ' \n')
