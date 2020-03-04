@@ -3,11 +3,11 @@ import serial
 
 
 class WriterThread(threading.Thread):
-    def __init__(self, name,instance):
+    def __init__(self, name, instance):
         super(WriterThread, self).__init__()
         self.name = name
-        self.instance=instance
-        self.ser = serial.Serial('COM3', 19200, timeout=1)
+        self.instance = instance
+        self.ser = serial.Serial('COM12', 19200, timeout=1)
         if self.ser.is_open:
             print("Serial is opened")
             self.loop = True
@@ -33,4 +33,3 @@ class WriterThread(threading.Thread):
 
     def ping(self):
         self.run(once=True)
-
