@@ -17,3 +17,18 @@ class Manager:
               ' from 10Hz buffered queue\n')
         print('Getting ' + str(self.myInstance.get4HzData()) +
               ' from 4Hz buffered queue\n')
+
+    def list(self):
+        print("Elements in q100:\n")
+        for elem in self.myInstance.list100Hz():
+            print("\t"+str(elem))
+        print("\nElements in q10:\n")
+        for elem in self.myInstance.list10Hz():
+            print("\t"+str(elem))
+        print("\nElements in q4:\n")
+        for elem in self.myInstance.list4Hz():
+            print("\t"+str(elem))
+        print("End printing lists\n")
+
+    def shutdown(self):
+        print("Uninplemented yet.\n")
