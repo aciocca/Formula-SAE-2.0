@@ -34,8 +34,6 @@ class IController:
         else:
             IController.__instance = self
 
-
-
     # 100Hz methods
     def add100HzData(self, item):
         if self.q100.full():
@@ -52,9 +50,9 @@ class IController:
             for elem in list(self.q100.queue):
                 data = data + elem
                 items = items + 1
-            quant=data/items
+            quant = data/items
         else:
-            quant=-1
+            quant = -1
         return quant
 
     def q100HzFull(self):
@@ -76,9 +74,9 @@ class IController:
             for elem in list(self.q10.queue):
                 data = data + elem
                 items = items + 1
-            quant=data/items
+            quant = data/items
         else:
-            quant=-1
+            quant = -1
         return quant
 
     def q10HzFull(self):
