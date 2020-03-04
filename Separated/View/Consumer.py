@@ -17,5 +17,4 @@ class ConsumerThread(threading.Thread):
                   ' from 10Hz buffered queue\n')
             print('Getting ' + str(IController.getInstance().get4HzData()) +
                   ' from 14Hz buffered queue\n')
-            time.sleep(1/60)
         return
