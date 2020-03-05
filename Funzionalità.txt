@@ -28,3 +28,8 @@ Funzionalità:
 - Salvataggio dei log su server remoto
 - Aggiornamento del view regolabile
 
+Il view chiede al controller:
+Dati della macchina
+Dati della connessione seriale (apri/chiudi/infostato)
+
+
