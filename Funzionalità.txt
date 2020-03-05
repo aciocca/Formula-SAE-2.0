@@ -1,0 +1,30 @@
+Il programma è sviluppato con in mente il modello MVC (Model View Control)
+
+Questo pattern architetturale divide i compiti del programma in tre macrocategorie:
+Il MODEL da gli strumenti per accedere ai dati di cui necessita l'applicazione
+Il VIEW si occupa della parte grafica del programma, permettendo anche all'utente di interagire con il programma
+Il CONTROLLER riceve i comandi dell'utente passati dal view, e li esegue, aggiornando lo stato del view e del model
+
+GRIFFIN è diviso nel modo seguente:
+View: Interfaccia grafica, l'utente inserisce tramite il view tutti i dati specifici alla corrente sessione.
+Tra questi dati abbiamo:
+- Impostazioni di connessione (Default: ****)
+- ???
+Inoltre regola la velocità di recupero dei dati dal model
+Control: L'intermediario, si occupa di far partire o chiudere la connessione al seriale, di prendere i dati freschi dal model su richiesta del view, ???
+Model: In un thread a parte, una volta fatto partire il loop di aggiornamento dei dati, sfrutta la connessione creata dal control per ricevere i nuovi dati in ingresso e decodificarli 
+
+
+Funzionalità:
+- Acquisizione dei dati via antenna wireless [specifiche antenna]
+- Decodifica dei pacchetti in ricezione
+- Logging dei dati, con salvataggio su disco ogni X per resilenza ai crash
+- Visualizzazione Real-Time dei dati della macchina
+- Lettura dei log salvati dal programma
+- Comunicazione con la macchina 2 way (+ spie errore su macchina)
+- Animazioni fluide
+- Visualizzazione percorso GPS con possibilità di impostare punto di partenza
+- Dati su giri percorsi e tempo sul giro
+- Salvataggio dei log su server remoto
+- Aggiornamento del view regolabile
+
