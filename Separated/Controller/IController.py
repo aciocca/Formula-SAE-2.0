@@ -25,6 +25,7 @@ class IController:
         # media dati 10Hz ogni 10 dati
         # media dati 4Hz ogni elemento (nessuna media)
         modelInstance=IModel.IModel()
+        modelInstance.getInstance()
         self.BUF_SIZE100 = 10
         self.BUF_SIZE10 = 10
         self.BUF_SIZE4 = 1
