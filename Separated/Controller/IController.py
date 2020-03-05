@@ -3,7 +3,7 @@
 # volatili gestite da questa stessa classe
 # (riempimento, richiesta dati e disponibilit�)
 import queue
-
+from Model import IModel
 
 class IController:
     __instance = None
@@ -24,6 +24,7 @@ class IController:
         # media dati 100Hz ogni 10 dati
         # media dati 10Hz ogni 10 dati
         # media dati 4Hz ogni elemento (nessuna media)
+        modelInstance=IModel.IModel()
         self.BUF_SIZE100 = 10
         self.BUF_SIZE10 = 10
         self.BUF_SIZE4 = 1
@@ -33,6 +34,8 @@ class IController:
             print("This class is a singleton!")
         else:
             IController.__instance = self
+
+    #Methods for Model Purposes
 
     # 100Hz methods
     def add100HzData(self, item):
@@ -110,3 +113,27 @@ class IController:
 
     def list4Hz(self):
         return list(self.q4.queue)
+    
+    # Methods for View purposes
+    
+    def consume(self):
+        self.myInstance.getInstance()
+        print('Getting ' + str(self.myInstance.get100HzData()) +
+              ' from 100Hz buffered queue\n')
+        print('Getting ' + str(self.myInstance.get10HzData()) +
+              ' from 10Hz buffered queue\n')
+        print('Getting ' + str(self.myInstance.get4HzData()) +
+              ' from 4Hz buffered queue\n')
+        
+    def list(self):
+        print("Elements in q100:\n")
+        for elem in self.list100Hz():
+            print("\t"+str(elem))
+        print("\nElements in q10:\n")
+        for elem in self.list10Hz():
+            print("\t"+str(elem))
+        print("\nElements in q4:\n")
+        for elem in self.list4Hz():
+            print("\t"+str(elem))
+        print("End printing lists\n")
+
