@@ -4,6 +4,7 @@
 # (riempimento, richiesta dati e disponibilit�)
 import queue
 from Model import IModel
+from time import sleep
 
 class IController:
     __instance = None
@@ -15,20 +16,73 @@ class IController:
             IController()
         return IController.__instance
 
+        IModel.open
+    
+    def scanCOMs(self):
+        portList = []
+        for i in range(255):
+            try:
+                portToCheck = 'COM' + str(i)
+                s = serial.Serial(portToCheck)
+                s.close()
+                portList.append(portToCheck)
+            except serial.SerialException:
+                pass
+        return portList
+
+    
+    def openPort(self, portName, baudRate, **kwargs):
+        
+        if "stopBit" in kwargs.keys():
+            stopBit = kwargs["stopBit"]
+        else:
+            stopBit=1
+
+        if "length" in kwargs.keys():
+            wordLength=kwargs["length"]
+        else:
+            wordLength=8
+            
+        if "parity" in kwargs.keys():
+            wordParity=kwargs["parity"]
+        else:
+            wordParity='N'
+
+        if "timeout" in kwargs.keys():
+            timeout=kwargs["timeout"]
+        else:
+            timeout=600/self.__baudRate
+        
+        if "bytesToRead" in kwargs.keys():
+            bytesToRead=kwargs["bytesToRead"]
+        else:
+            bytesToRead=1
+        
+        serialInstance = serial.Serial(port=portName, baudrate=baudRate, bytesize=wordLength, parity=wordParity, stopbits=stopBit, timeout=timeout)
+        serialInstance.close()
+        serialInstance.open()
+        sleep(2)        # to stabilize the connection
+        IModel.getInstance(),startThread(serialInstance)
+    
+    def closePort(self):
+        self.__serialInstance.close()
+
+    def getSerialInstance(self):
+        return self.__serialInstance
+        
+
     def initializeGlobalVariables(self):
-        self.q100 = queue.Queue(self.BUF_SIZE100)
-        self.q10 = queue.Queue(self.BUF_SIZE10)
-        self.q4 = queue.Queue(self.BUF_SIZE4)
+        self.q100 = queue.Queue(self.__BUF_SIZE100)
+        self.q10 = queue.Queue(self.__BUF_SIZE10)
+        self.q4 = queue.Queue(self.__BUF_SIZE4)
 
     def __init__(self):
         # media dati 100Hz ogni 10 dati
         # media dati 10Hz ogni 10 dati
         # media dati 4Hz ogni elemento (nessuna media)
-        modelInstance=IModel.IModel()
-        modelInstance.getInstance()
-        self.BUF_SIZE100 = 10
-        self.BUF_SIZE10 = 10
-        self.BUF_SIZE4 = 1
+        self.__BUF_SIZE100 = 10
+        self.__BUF_SIZE10 = 10
+        self.__BUF_SIZE4 = 1
         self.initializeGlobalVariables()
         # Virtually private constructor.
         if IController.__instance is not None:

@@ -3,11 +3,10 @@ import serial
 
 
 class WriterThread(threading.Thread):
-    def __init__(self, name, instance):
+    def __init__(self, name, instance,ser):
         super(WriterThread, self).__init__()
         self.name = name
-        self.instance = instance
-        self.ser = serial.Serial('COM12', 19200, timeout=1)
+        self.ser =ser
         if self.ser.is_open:
             print("Serial is opened")
             self.loop = True
@@ -19,7 +18,7 @@ class WriterThread(threading.Thread):
                 item = int.from_bytes(self.ser.readline(1), "big")
                 if item is not None:
                     file.write("Appended line %d\n" % item)
-                    self.instance.getInstance().add100HzData(item)
+                    IController.getInstance().add100HzData(item)
                     self.instance.getInstance().add10HzData(item)
                     self.instance.getInstance().add4HzData(item)
         return

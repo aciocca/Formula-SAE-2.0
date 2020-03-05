@@ -1,13 +1,17 @@
+import serial
+
 class IModel:
-    __instance = None
+    __instance=None
+    
+    
 
     @staticmethod
-    def getInstance():
+    def getInstance(cls):
         # Static access method.
         if IModel.__instance is None:
             IModel()
         return IModel.__instance
     
-    def startThread(self):
-        self.w = Writer.WriterThread(name="Stocazzo", instance=self.myInstance)
-        self.w.start()       
+    def startThread(self, serialInstance):
+        self.w = Writer.WriterThread(name="Stocazzo", serialInstance)
+        self.w.start()
