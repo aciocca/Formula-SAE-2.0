@@ -98,21 +98,6 @@ class IController:
             self.q100.get()
         self.q100.put(item)
 
-    def get100HzData(self):
-        # da fare la media dei primi 10 valori della queue
-        data = 0
-        items = 0
-        if not self.q100.empty():
-            # il "listing" e' un'operazione atomica quindi
-            # NON DOVREBBE bloccare il thread
-            for elem in list(self.q100.queue):
-                data = data + elem
-                items = items + 1
-            quant = data/items
-        else:
-            quant = -1
-        return quant
-
     def q100HzFull(self):
         return self.q100.full()
 
@@ -121,21 +106,6 @@ class IController:
         if self.q10.full():
             self.q10.get()
         self.q10.put(item)
-
-    def get10HzData(self):
-        # da fare la media dei primi 10 valori della queue
-        data = 0
-        items = 0
-        if not self.q10.empty():
-            # il "listing" e' un'operazione atomica quindi NON DOVREBBE
-            # bloccare il thread
-            for elem in list(self.q10.queue):
-                data = data + elem
-                items = items + 1
-            quant = data/items
-        else:
-            quant = -1
-        return quant
 
     def q10HzFull(self):
         return self.q10.full()
@@ -146,14 +116,6 @@ class IController:
         if self.q4.full():
             self.q4.get()
         self.q4.put(item)
-
-    def get4HzData(self):
-        # Non servono medie, do il dato esattamente come e'
-        if self.q4.empty():
-            item = None
-        else:
-            item = self.q4.get()
-        return item
 
     def q4HzFull(self):
         return self.q4.full()
@@ -192,3 +154,40 @@ class IController:
             print("\t"+str(elem))
         print("End printing lists\n")
 
+    def get100HzData(self):
+        # da fare la media dei primi 10 valori della queue
+        data = 0
+        items = 0
+        if not self.q100.empty():
+            # il "listing" e' un'operazione atomica quindi
+            # NON DOVREBBE bloccare il thread
+            for elem in list(self.q100.queue):
+                data = data + elem
+                items = items + 1
+            quant = data/items
+        else:
+            quant = -1
+        return quant
+        
+    def get10HzData(self):
+        # da fare la media dei primi 10 valori della queue
+        data = 0
+        items = 0
+        if not self.q10.empty():
+            # il "listing" e' un'operazione atomica quindi NON DOVREBBE
+            # bloccare il thread
+            for elem in list(self.q10.queue):
+                data = data + elem
+                items = items + 1
+            quant = data/items
+        else:
+            quant = -1
+        return quant
+
+    def get4HzData(self):
+        # Non servono medie, do il dato esattamente come e'
+        if self.q4.empty():
+            item = None
+        else:
+            item = self.q4.get()
+        return item
