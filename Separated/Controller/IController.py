@@ -8,6 +8,7 @@ from time import sleep
 
 class IController:
     __instance = None
+    __serialInstance = None
 
     @staticmethod
     def getInstance():
@@ -18,7 +19,8 @@ class IController:
 
         IModel.open
     
-    def scanCOMs(self):
+    @staticmethod
+    def scanCOMs(cls):
         portList = []
         for i in range(255):
             try:
@@ -31,7 +33,8 @@ class IController:
         return portList
 
     
-    def openPort(self, portName, baudRate, **kwargs):
+    @staticmethod
+    def openPort(cls, portName, baudRate, **kwargs):
         
         if "stopBit" in kwargs.keys():
             stopBit = kwargs["stopBit"]
@@ -58,17 +61,19 @@ class IController:
         else:
             bytesToRead=1
         
-        serialInstance = serial.Serial(port=portName, baudrate=baudRate, bytesize=wordLength, parity=wordParity, stopbits=stopBit, timeout=timeout)
-        serialInstance.close()
-        serialInstance.open()
+        IController.__serialInstance = serial.Serial(port=portName, baudrate=baudRate, bytesize=wordLength, parity=wordParity, stopbits=stopBit, timeout=timeout)
+        IController.__serialInstance.close()
+        IController.__serialInstance.open()
         sleep(2)        # to stabilize the connection
-        IModel.getInstance(),startThread(serialInstance)
+        IModel.getInstance().startThread(IController.__serialInstance)
     
-    def closePort(self):
-        self.__serialInstance.close()
+    @staticmethod
+    def closePort(cls):   
+        IController.__serialInstance.close()        
 
-    def getSerialInstance(self):
-        return self.__serialInstance
+    @staticmethod
+    def getSerialInstance(cls):
+        return IController.__serialInstance
         
 
     def initializeGlobalVariables(self):
