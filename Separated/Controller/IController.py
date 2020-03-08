@@ -9,6 +9,12 @@ from time import sleep
 class IController:
     __instance = None
     __serialInstance = None
+    __stopBit = 1 
+    __wordLength = 8
+    __wordParity = 'N'
+    __timeout = 600/115200      #default baudrate 115200
+    __bytesToRead=1
+
 
     @staticmethod
     def getInstance():
@@ -32,36 +38,25 @@ class IController:
                 pass
         return portList
 
-    
     @staticmethod
     def openPort(cls, portName, baudRate, **kwargs):
         
         if "stopBit" in kwargs.keys():
-            stopBit = kwargs["stopBit"]
-        else:
-            stopBit=1
+            IController.__stopBit = kwargs["stopBit"]
 
         if "length" in kwargs.keys():
-            wordLength=kwargs["length"]
-        else:
-            wordLength=8
+            IController.__wordLength=kwargs["length"]
             
         if "parity" in kwargs.keys():
-            wordParity=kwargs["parity"]
-        else:
-            wordParity='N'
+            IController.__wordParity=kwargs["parity"]
 
         if "timeout" in kwargs.keys():
-            timeout=kwargs["timeout"]
-        else:
-            timeout=600/self.__baudRate
+            IController.__timeout=kwargs["timeout"]
         
         if "bytesToRead" in kwargs.keys():
-            bytesToRead=kwargs["bytesToRead"]
-        else:
-            bytesToRead=1
+            IController.__bytesToRead=kwargs["bytesToRead"]
         
-        IController.__serialInstance = serial.Serial(port=portName, baudrate=baudRate, bytesize=wordLength, parity=wordParity, stopbits=stopBit, timeout=timeout)
+        IController.__serialInstance = serial.Serial(port=IController.__portName, baudrate=IController.__baudRate, bytesize=IController.__wordLength, parity=IController.__wordParity, stopbits=IController.__stopBit, timeout=IController.__timeout)
         IController.__serialInstance.close()
         IController.__serialInstance.open()
         sleep(2)        # to stabilize the connection
@@ -74,6 +69,14 @@ class IController:
     @staticmethod
     def getSerialInstance(cls):
         return IController.__serialInstance
+    
+    @staticmethod    
+    def getSpecs(cls):         #returns connection's specs or 0 if there isn't a serial connection
+        if IController.__serialInstance != None:    
+            return specs = {"stopBit": IController.__stopBit, "wordLength": IController.__wordLength, "wordParity": IController.__wordParity, "timeout": IController.__timeout, "bytesToRead": IController.__bytesToRead}
+        else:
+            return False
+    
         
 
     def initializeGlobalVariables(self):
