@@ -13,5 +13,5 @@ class IModel:
         return IModel.__instance
     
     def startThread(self, serialInstance):
-        self.w = Writer.WriterThread(name="Stocazzo", serialInstance)
+        self.w = Writer.WriterThread("Stocazzo", serialInstance)
         self.w.start()

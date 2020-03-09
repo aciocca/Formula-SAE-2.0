@@ -3,7 +3,7 @@ import serial
 
 
 class WriterThread(threading.Thread):
-    def __init__(self, name, instance,ser):
+    def __init__(self, name, ser):
         super(WriterThread, self).__init__()
         self.name = name
         self.ser =ser

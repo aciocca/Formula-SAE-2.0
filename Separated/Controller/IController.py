@@ -13,7 +13,7 @@ class IController:
     __wordLength = 8
     __wordParity = 'N'
     __timeout = 600/115200      #default baudrate 115200
-    __bytesToRead=1
+    __bytesToRead = 1
 
 
     @staticmethod
@@ -73,7 +73,8 @@ class IController:
     @staticmethod    
     def getSpecs(cls):         #returns connection's specs or 0 if there isn't a serial connection
         if IController.__serialInstance != None:    
-            return specs = {"stopBit": IController.__stopBit, "wordLength": IController.__wordLength, "wordParity": IController.__wordParity, "timeout": IController.__timeout, "bytesToRead": IController.__bytesToRead}
+            specs = {"stopBit": IController.__stopBit, "wordLength": IController.__wordLength, "wordParity": IController.__wordParity, "timeout": IController.__timeout, "bytesToRead": IController.__bytesToRead}
+            return specs
         else:
             return False
     
