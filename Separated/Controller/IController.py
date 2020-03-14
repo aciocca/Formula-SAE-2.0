@@ -41,8 +41,8 @@ class IController:
 
     @staticmethod
     def openPort(cls, portName, baudRate, **kwargs):
-        __portName=portName
-        __baudRate=baudRate
+        IController.__portName=portName
+        IController.__baudRate=baudRate
         if "stopBit" in kwargs.keys():
             IController.__stopBit = kwargs["stopBit"]
 
@@ -91,7 +91,7 @@ class IController:
         self.__BUF_SIZE4 = 1
         self.initializeGlobalVariables()
         #DEBUG: CONNECTION STRING TO MODIFY
-        self.openPort(cls=self,portName="COM5",baudRate=115200)
+        self.openPort(cls=self,portName="COM3",baudRate=115200)
         # Virtually private constructor.
         if IController.__instance is not None:
             print("This class is a singleton!")

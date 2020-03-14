@@ -1,0 +1,14 @@
+1. Installazione 
+pip install pyserial
+Richiede python 2.7+
+
+2. Import
+import serial
+ad inizio del codice
+
+3.Funzioni utili
+3a. Listare porte
+from serial.tools import list_ports
+x = list_ports.comports()
+for elem in x:
+    print(elem)
