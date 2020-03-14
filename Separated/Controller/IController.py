@@ -4,7 +4,7 @@
 # (riempimento, richiesta dati e disponibilit�)
 import queue
 import serial
-from Model import IModel
+from Model.IModel import IModel
 from time import sleep
 
 class IController:
