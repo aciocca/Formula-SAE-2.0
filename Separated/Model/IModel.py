@@ -3,8 +3,6 @@ import serial
 class IModel:
     __instance=None
     
-    
-
     @staticmethod
     def getInstance(cls):
         # Static access method.
@@ -13,5 +11,5 @@ class IModel:
         return IModel.__instance
     
     def startThread(self, serialInstance):
-        self.w = Writer.WriterThread("Stocazzo", serialInstance)
+        self.w = Writer.WriterThread("Writer thread", serialInstance)
         self.w.start()

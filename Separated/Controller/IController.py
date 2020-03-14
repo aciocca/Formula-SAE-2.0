@@ -3,6 +3,7 @@
 # volatili gestite da questa stessa classe
 # (riempimento, richiesta dati e disponibilit�)
 import queue
+import serial
 from Model import IModel
 from time import sleep
 
@@ -12,18 +13,18 @@ class IController:
     __stopBit = 1 
     __wordLength = 8
     __wordParity = 'N'
-    __timeout = 600/115200      #default baudrate 115200
+    __timeout = 600/115200
     __bytesToRead = 1
-
-
+    __portName=""
+    __baudRate=115200          #default baudrate 115200
+    
     @staticmethod
     def getInstance():
         # Static access method.
+        print("ContInstance called")
         if IController.__instance is None:
             IController()
         return IController.__instance
-
-        IModel.open
     
     @staticmethod
     def scanCOMs(cls):
@@ -40,7 +41,8 @@ class IController:
 
     @staticmethod
     def openPort(cls, portName, baudRate, **kwargs):
-        
+        __portName=portName
+        __baudRate=baudRate
         if "stopBit" in kwargs.keys():
             IController.__stopBit = kwargs["stopBit"]
 
@@ -62,23 +64,18 @@ class IController:
         sleep(2)        # to stabilize the connection
         IModel.getInstance().startThread(IController.__serialInstance)
     
-    @staticmethod
     def closePort(cls):   
-        IController.__serialInstance.close()        
+        self.__serialInstance.close()        
 
-    @staticmethod
     def getSerialInstance(cls):
         return IController.__serialInstance
-    
-    @staticmethod    
+       
     def getSpecs(cls):         #returns connection's specs or 0 if there isn't a serial connection
         if IController.__serialInstance != None:    
             specs = {"stopBit": IController.__stopBit, "wordLength": IController.__wordLength, "wordParity": IController.__wordParity, "timeout": IController.__timeout, "bytesToRead": IController.__bytesToRead}
             return specs
         else:
             return False
-    
-        
 
     def initializeGlobalVariables(self):
         self.q100 = queue.Queue(self.__BUF_SIZE100)
@@ -93,6 +90,8 @@ class IController:
         self.__BUF_SIZE10 = 10
         self.__BUF_SIZE4 = 1
         self.initializeGlobalVariables()
+        #DEBUG: CONNECTION STRING TO MODIFY
+        self.openPort(cls=self,portName="COM5",baudRate=115200)
         # Virtually private constructor.
         if IController.__instance is not None:
             print("This class is a singleton!")
@@ -143,12 +142,11 @@ class IController:
     # Methods for View purposes
     
     def consume(self):
-        self.myInstance.getInstance()
-        print('Getting ' + str(self.myInstance.get100HzData()) +
+        print('Getting ' + str(IController.getInstance().get100HzData()) +
               ' from 100Hz buffered queue\n')
-        print('Getting ' + str(self.myInstance.get10HzData()) +
+        print('Getting ' + str(IController.getInstance().get10HzData()) +
               ' from 10Hz buffered queue\n')
-        print('Getting ' + str(self.myInstance.get4HzData()) +
+        print('Getting ' + str(IController.getInstance().get4HzData()) +
               ' from 4Hz buffered queue\n')
         
     def list(self):
