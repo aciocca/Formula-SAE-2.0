@@ -19,7 +19,7 @@ class IController:
     __baudRate=115200          #default baudrate 115200
     
     @staticmethod
-    def getInstance():
+    def getInstance(cls):
         # Static access method.
         print("ContInstance called")
         if IController.__instance is None:
