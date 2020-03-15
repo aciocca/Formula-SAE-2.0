@@ -2,10 +2,7 @@ from Controller import IController
 from Model import IModel
 class Main:
     
-    controllerInterface=IController.IController()
-    modelInterface=IModel.IModel()
-
-    controllerInterface.getInstance().openPort(portName="COM5",baudRate=115200)
+    IController.IController().getInstance().openPort(portName="COM5",baudRate=115200)
     while True:
         comand = input("Inserisci la lettera C /o/ c per consumare, F /o/ f per vedere la lista:\n")
         if comand == "C" or comand == "c":

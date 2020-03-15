@@ -1,11 +1,13 @@
 import serial
-from Writer import WriterThread
 
 class IModel:
     __instance=None
     
+    def __init__(self):
+        print("ModInstance initialized")
+    
     @staticmethod
-    def getInstance(cls):
+    def getInstance():
         # Static access method.
         if IModel.__instance is None:
             IModel()

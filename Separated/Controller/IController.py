@@ -4,7 +4,7 @@
 # (riempimento, richiesta dati e disponibilit�)
 import queue
 import serial
-from Separated.Model.IModel import IModel
+from Model.IModel import IModel
 from time import sleep
 
 class IController:
@@ -36,15 +36,14 @@ class IController:
 
     
     @staticmethod
-    def getInstance(cls):
+    def getInstance():
         # Static access method.
         print("ContInstance called")
         if IController.__instance is None:
             IController()
         return IController.__instance
     
-    @staticmethod
-    def scanCOMs(cls):
+    def scanCOMs():
         portList = []
         for i in range(255):
             try:
@@ -56,8 +55,7 @@ class IController:
                 pass
         return portList
 
-    @staticmethod
-    def openPort(cls,portName, baudRate, **kwargs):
+    def openPort(self,portName, baudRate, **kwargs):
         IController.__portName=portName
         IController.__baudRate=baudRate
         if "stopBit" in kwargs.keys():
@@ -79,8 +77,7 @@ class IController:
         IController.__serialInstance.close()
         IController.__serialInstance.open()
         sleep(2)        # to stabilize the connection
-        ModelInstance = IModel.getInstance()
-        ModelInstance.startThread(IController.__serialInstance)
+        IModel.IModel().getInstance().startThread(IController.__serialInstance)
     
     def setModelInterface(self, interface):
         IController.__modelInstance=interface
