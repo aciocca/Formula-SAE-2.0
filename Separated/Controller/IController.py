@@ -79,7 +79,7 @@ class IController:
         IController.__serialInstance.close()
         IController.__serialInstance.open()
         sleep(2)        # to stabilize the connection
-        IController.__modelInstance.getInstance().startThread(IController.__serialInstance)
+        IModel.getInstance().startThread(IController.__serialInstance)
     
     def setModelInterface(self, interface):
         IController.__modelInstance=interface

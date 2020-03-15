@@ -1,4 +1,5 @@
 import serial
+from Writer import WriterThread
 
 class IModel:
     __instance=None
@@ -11,5 +12,5 @@ class IModel:
         return IModel.__instance
     
     def startThread(self, serialInstance):
-        self.w = Writer.WriterThread("Writer thread", serialInstance)
+        self.w = WriterThread("Writer thread", serialInstance)
         self.w.start()

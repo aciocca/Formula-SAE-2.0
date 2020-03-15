@@ -1,6 +1,6 @@
 import threading
 import serial
-
+from Controller.IController import IController
 
 class WriterThread(threading.Thread):
     def __init__(self, name, ser):
@@ -48,7 +48,7 @@ class WriterThread(threading.Thread):
                         if charReceived==kwargs["endChar"]:
                             break
                     elif attempt>=200:
-                    return b'ErrorReading'
+                        return b'ErrorReading'
                     else:
                         attempt+=1
             else:
