@@ -10,6 +10,7 @@ from time import sleep
 class IController:
     __instance = None
     __serialInstance = None
+    __modelInstance = None
     __stopBit = 1 
     __wordLength = 8
     __wordParity = 'N'
@@ -18,8 +19,24 @@ class IController:
     __portName=""
     __baudRate=115200          #default baudrate 115200
     
+    def __init__(self):
+        # media dati 100Hz ogni 10 dati
+        # media dati 10Hz ogni 10 dati
+        # media dati 4Hz ogni elemento (nessuna media)
+        self.__BUF_SIZE100 = 10
+        self.__BUF_SIZE10 = 10
+        self.__BUF_SIZE4 = 1
+        self.initializeGlobalVariables()
+        #DEBUG: CONNECTION STRING TO MODIFY
+        # Virtually private constructor.
+        if IController.__instance is not None:
+            print("This class is a singleton!")
+        else:
+            IController.__instance = self
+
+    
     @staticmethod
-    def getInstance(cls):
+    def getInstance():
         # Static access method.
         print("ContInstance called")
         if IController.__instance is None:
@@ -27,7 +44,7 @@ class IController:
         return IController.__instance
     
     @staticmethod
-    def scanCOMs(cls):
+    def scanCOMs():
         portList = []
         for i in range(255):
             try:
@@ -40,7 +57,7 @@ class IController:
         return portList
 
     @staticmethod
-    def openPort(cls, portName, baudRate, **kwargs):
+    def openPort(portName, baudRate, **kwargs):
         IController.__portName=portName
         IController.__baudRate=baudRate
         if "stopBit" in kwargs.keys():
@@ -62,15 +79,18 @@ class IController:
         IController.__serialInstance.close()
         IController.__serialInstance.open()
         sleep(2)        # to stabilize the connection
-        IModel.getInstance().startThread(IController.__serialInstance)
+        IController.__modelInstance.getInstance().startThread(IController.__serialInstance)
     
-    def closePort(cls):   
+    def setModelInterface(self, interface):
+        IController.__modelInstance=interface
+    
+    def closePort(self):   
         self.__serialInstance.close()        
 
-    def getSerialInstance(cls):
+    def getSerialInstance(self):
         return IController.__serialInstance
        
-    def getSpecs(cls):         #returns connection's specs or 0 if there isn't a serial connection
+    def getSpecs(self):         #returns connection's specs or 0 if there isn't a serial connection
         if IController.__serialInstance != None:    
             specs = {"stopBit": IController.__stopBit, "wordLength": IController.__wordLength, "wordParity": IController.__wordParity, "timeout": IController.__timeout, "bytesToRead": IController.__bytesToRead}
             return specs
@@ -81,22 +101,6 @@ class IController:
         self.q100 = queue.Queue(self.__BUF_SIZE100)
         self.q10 = queue.Queue(self.__BUF_SIZE10)
         self.q4 = queue.Queue(self.__BUF_SIZE4)
-
-    def __init__(self):
-        # media dati 100Hz ogni 10 dati
-        # media dati 10Hz ogni 10 dati
-        # media dati 4Hz ogni elemento (nessuna media)
-        self.__BUF_SIZE100 = 10
-        self.__BUF_SIZE10 = 10
-        self.__BUF_SIZE4 = 1
-        self.initializeGlobalVariables()
-        #DEBUG: CONNECTION STRING TO MODIFY
-        self.openPort(cls=self,portName="COM3",baudRate=115200)
-        # Virtually private constructor.
-        if IController.__instance is not None:
-            print("This class is a singleton!")
-        else:
-            IController.__instance = self
 
     #Methods for Model Purposes
 
@@ -140,7 +144,7 @@ class IController:
         return list(self.q4.queue)
     
     # Methods for View purposes
-    
+        
     def consume(self):
         print('Getting ' + str(IController.getInstance().get100HzData()) +
               ' from 100Hz buffered queue\n')
