@@ -1,12 +1,33 @@
 from GUI.RealTime import FileHandler
 
 class FormatData:
+
+    __doc__='''Documentation for FormatData.py functions:
+
+    @classmethod
+    formatData(encodedMessage):
+        it decodes the encodedMessage given as attribute to the function
+        if the encodedMessage had been received without errors (the pattern is: every four bytes only three are data bytes):
+            returns: a list composed by the headerIndex (to know which block (100Hz, 10Hz, 4Hz) the message belongs to) and the data bytes
+
+        else:
+            returns: ['E', 'R', 'R', 'O', 'R'] to emphasize that an error has occured
+ 
+    @classmethod
+    setData(dataFrame, encodedMessage, fileHandler):
+        using formatData() function, it decodes the message and updates the dictionaries inside the dataFrame object.
+        if (decodedMessage[0]==0x3F):   checks if the transmitted block is the 100Hz one
+        elif (decodedMessage[0]==0x0A): checks if the transmitted block is the 10Hz one
+        elif(decodedMessage[0]==0x04):  checks if the transmitted block is the 4Hz one
+
+        Once the update is completed, the function uses the fileHandler object to save data to .csv file
+ '''
     
     @classmethod
     def formatData(cls, encodedMessage):
         encodedMessage = list(encodedMessage)
         mask = 0x3F
-        if len(encodedMessage)%4!=1:
+        if len(encodedMessage)%4 != 1:
             return ['E', 'R', 'R', 'O', 'R']
         else:
             decodedMessage = []

@@ -3,24 +3,37 @@ class DataFrame:
     __doc__='''Documentation for DataFrame.py instance functions:
     
 -getEngineFrame():
-    return the dictionary with engine sensors values
+    returns the dictionary with engine sensors values
 
 -getGPSFrame():
-    return the dictionary with GPS values
+    returns the dictionary with GPS values
 
 -getWheelSensorsFrame():
-    return the dictionary with proprietary sensors values
+    returns the dictionary with proprietary sensors values
 
 -getGyroScopeFrame():
-    return the dictionary with the gyroscope (and the accelerometer) sensor values
+    returns the dictionary with the gyroscope (and the accelerometer) sensor values
 
--setEngineFrame(key, value)
--setGPSFrame(key, value)
--setWheelSensorsFrame(key, value)
+-setEngineFrame(key, value):
+    sets the value associated to the engineFrame's key given as attribute
+
+-setGPSFrame(key, value):
+    sets the value associated to the GPSFrame's key given as attribute
+    returns:
+        True    if it is successful
+        False   if the key given as attribute doesn't exist
+
+-setWheelSensorsFrame(key, value):
+    sets the value associated to the WheelSensorsFrame's key given as attribute
+    returns:
+        True    if it is successful
+        False   if the key given as attribute doesn't exist
+
 -setGyroscopeFrame(key, value):
-    return:
-        True    if set the value in the dictionary with the same key
-        False   if can't set the value in the dictionary (there isn't the key in the dictionary)
+    sets the value associated to the WheelSensorsFrame's key given as attribute
+    returns:
+        True    if it is successful
+        False   if the key given as attribute doesn't exist
 
 Since all the data structures are dictionaries, to see the list of keys, call the keys() function on the dictionary'''
 
