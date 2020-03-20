@@ -71,12 +71,13 @@ class FormatData:
                 
                 # dataFrame.setWheelSensorsFrame("vel_fsx", SPEED_VALUE)    # NON IN USO (NON ABBIAMO LE SPECIFICHE DELLE RUOTE FONICHE)
                 # dataFrame.setWheelSensorsFrame("vel_fdx", SPEED_VALUE)
-                # dataFrame.setWheelSensorsFrame("vel_rsx", SPEED_VALUE)
-                # dataFrame.setWheelSensorsFrame("vel_rdx", SPEED_VALUE)
-
+                
                 dataFrame.setWheelSensorsFrame("countRSx", (int(decodedMessage[32] & 0x0F) << 8) | int(decodedMessage[30]))
                 dataFrame.setWheelSensorsFrame("countRDx", (int(decodedMessage[32] & 0xF0) << 4) | int(decodedMessage[31]))
                 dataFrame.setWheelSensorsFrame("dtR", int(decodedMessage[33]))
+                
+                # dataFrame.setWheelSensorsFrame("vel_rsx", SPEED_VALUE)
+                # dataFrame.setWheelSensorsFrame("vel_rdx", SPEED_VALUE)
 
                 dataFrame.setEngineFrame("gear", int(decodedMessage[34]))
                 
