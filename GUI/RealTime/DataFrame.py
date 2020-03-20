@@ -40,8 +40,8 @@ Since all the data structures are dictionaries, to see the list of keys, call th
     def __init__(self):
         #DEFINITION OF DICTIONARIES' FIELDS
         self.__engineFrame = {"rpm": 0, "tps": 0.0, "t_h20": 0, "t_air": 0, "t_oil": 0, "vbb": 0.0, "lambda1_avg": 0.0, "lambda1_raw": 0.0, "k_lambda1": 0.0, "inj_low": 0.0, "inj_high": 0.0, "gear": 0}
-        self.__GPSFrame = {"hour": 0, "minutes": 0, "seconds": 0, "micro_seconds": 0.0, "n_s": "?", "e_w": "?", "fixQuality": 0, "n_sats": 0, "hdop": 0.0, "latitude": "?", "longitude": "?", "velGPS": 0.0}
-        self.__wheelSensorsFrame = {"vel_fsx": 0.0, "vel_fdx": 0.0, "vel_rdx": 0.0, "vel_rsx": 0.0, "pot_fsx": 0.0, "pot_fdx": 0.0, "pot_rdx": 0.0, "pot_rsx": 0.0, "potRAccuracy": 0.0, "potFAccuracy": 0.0, "steeringEncoder": 0.0}
+        self.__GPSFrame = {"hour": 0, "minutes": 0, "seconds": 0, "micro_seconds": 0.0, "n_s": "", "e_w": "", "fixQuality": 0, "n_sats": 0, "hdop": 0.0, "latitude": 0.0, "longitude": 0.0, "velGPS": 0.0}
+        self.__wheelSensorsFrame = {"countFSx": 0, "countFDx": 0, "dtF": 0, "countRSx": 0, "countRDx": 0, "dtR": 0, "vel_fsx": 0.0, "vel_fdx": 0.0, "vel_rdx": 0.0, "vel_rsx": 0.0, "pot_fsx": 0.0, "pot_fdx": 0.0, "pot_rdx": 0.0, "pot_rsx": 0.0, "potRAccuracy": 0.0, "potFAccuracy": 0.0, "steeringEncoder": 0.0}
         self.__gyroscopeFrame = {"gyro_x": 0.0, "gyro_y": 0.0, "gyro_z": 0.0, "accel_x": 0.0, "accel_y": 0.0, "accel_z": 0.0, }
 
 
