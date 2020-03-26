@@ -87,7 +87,3 @@ Since all the data structures are dictionaries, to see the list of keys, call th
             return True
         else:
             return False
-
-    def fillDict(self,decodedMessage):
-        pass
-        #TO-DO

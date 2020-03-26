@@ -57,7 +57,7 @@ class FormatData:
                 dataFrame.setGyroscopeFrame("gyro_y", (float(int(decodedMessage[13]) << 8 | int (decodedMessage[14]))) / 8192)
                 dataFrame.setGyroscopeFrame("gyro_z", (float(int(decodedMessage[15]) << 8 | int (decodedMessage[16]))) / 8192)
 
-                #L'offset dei potenziometri (il numero sottratto in fondo) va ricontrollato ad ogni prova della macchina
+                #POTENTIOMETER'S OFFSET (THE NUMBER SUBTRACTED AT THE END OF THE LINE) MUST BE CALCULATED AT EVERY CAR'S TEST
                 dataFrame.setWheelSensorsFrame("pot_fsx", (int(decodedMessage[17]) | ((int(decodedMessage[19]&0x0F))<<8))-610)
                 dataFrame.setWheelSensorsFrame("pot_fdx", (int(decodedMessage[18]) | ((int(decodedMessage[19]&0xF0))<<4))-410)
                 dataFrame.setWheelSensorsFrame("potFAccuracy", int(decodedMessage[20]))
@@ -69,8 +69,8 @@ class FormatData:
                 dataFrame.setWheelSensorsFrame("countFDx", (int(decodedMessage[27] & 0xF0) << 4) | int(decodedMessage[26]))
                 dataFrame.setWheelSensorsFrame("dtF", int(decodedMessage[28]))
                 
-                # dataFrame.setWheelSensorsFrame("vel_fsx", SPEED_VALUE)    # NON IN USO (NON ABBIAMO LE SPECIFICHE DELLE RUOTE FONICHE)
-                # dataFrame.setWheelSensorsFrame("vel_fdx", SPEED_VALUE)
+                # dataFrame.setWheelSensorsFrame("vel_fsx", SPEED_VALUE)    # NOT IN USE (PHONIC WHEEL'S SPECS NOT AVAILABLE)
+                # dataFrame.setWheelSensorsFrame("vel_fdx", SPEED_VALUE)    # NOT IN USE (PHONIC WHEEL'S SPECS NOT AVAILABLE)
                 
                 dataFrame.setWheelSensorsFrame("countRSx", (int(decodedMessage[32] & 0x0F) << 8) | int(decodedMessage[30]))
                 dataFrame.setWheelSensorsFrame("countRDx", (int(decodedMessage[32] & 0xF0) << 4) | int(decodedMessage[31]))
