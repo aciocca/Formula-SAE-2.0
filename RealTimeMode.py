@@ -109,9 +109,6 @@ class Application(tk.Frame):
         globalstuff.accel_x.set(gyroscopeFrame["accel_x"])
         globalstuff.accel_y.set(gyroscopeFrame["accel_y"])
         globalstuff.accel_z.set(gyroscopeFrame["accel_z"])
-        # Questo sleep gestisce la velocità di aggiornamento sullo schermo delle variabili
-        csvFile.write100Hz()
-        csvFile.write10Hz()
         self.master.after(globalstuff.timerDelay, self.updateThread)
 
 
