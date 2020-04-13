@@ -71,14 +71,16 @@ L'MVC garantisce un'ottimo grado di modularità al codice, permettendo il lavoro
 	Il view è composto dalle classi
 	/
 	/GRIFFIN/
-	.........__init__.py 		// Vuoto
-	.........gui_griffin.py 	// Scheletro della gui, chiama lui tutti i moduli necessari per comporre la gui, le variabili dei dati della macchina fanno capo a lui, in quanto possono servire a più tab, ha lui il tk.root
-	.........gui_realtimetab.py	// Tab con i dati in tempo reale
-	.........gui_serialtab.py	// Tab con i dati per la connessione al seriale 
-	.........gui_****tab.py		// Tutte le altre tab avranno il loro rispettivo modulo
-	.........gui_menubar.py		// La menubar con i suoi sottomenu (File... Options... ecc)
-	.........gui_logic.py		// Gestisce la logica della gui (chiusura, greyare out alcune funzioni quando non disponibili o viceversa)
-	.........gui_globalvars.py	// Raccoglie tutte le variabili globali del programma in un unico modulo, per poterle cambiare facilmente in caso di necessità
+	.........main.py				// Entry point
+	.........__init__.py 			// Vuoto
+	.........gui_griffin.py 		// Scheletro della gui, chiama lui tutti i moduli necessari per comporre la gui, le variabili dei dati della macchina fanno capo a lui, in quanto possono servire a più tab, ha lui il tk.root
+	.........gui_connectiontab.py	// Tab dalla quale avviare la connessione al seriale o chiuderla
+	.........gui_variables.py		// Contiene tutti i dati visualizzati dalla gui alla quale però possono accedere più tab (ad esempio lo stato della connessione)
+	.........gui_realtimetab.py		// Tab con i dati in tempo reale
+	.........gui_serialtab.py		// Tab con i dati per la connessione al seriale 
+	.........gui_****tab.py			// Tutte le altre tab avranno il loro rispettivo modulo
+	.........gui_logic.py			// Gestisce la logica della gui (greyare out alcune funzioni quando non disponibili o viceversa) e contiene la classe ConnectionStatus che ha i dati della connessione al serial
+	.........defaults.py			// Raccoglie tutte le variabili globali del programma in un unico modulo, per poterle cambiare facilmente in caso di necessità
 	........./controller/
 	.....................serialinterface.py	// Chiamato da gui_serialtab.py, crea un oggetto serialhandler e lo passa a serialreader, si occupa anche di chiudere la connessione quando necessario
 	.....................datainterface.py	// Chiamato sia da gui_griffin.py per controllare se ci sono dati nuovi, sia da serialreader.py per segnalare che ha finito di aggiornare i dati
@@ -88,6 +90,7 @@ L'MVC garantisce un'ottimo grado di modularità al codice, permettendo il lavoro
 	.....................filehandler.py
 	.....................formatdata.py
 	.....................serialhandler.py
+	........./res/			//Cartella con le immagini e le icone del programma
 
 7. Tecnologie usate
 tkinter

@@ -1,0 +1,44 @@
+tkinter useful tips
+
+1
+master.wm_attributes("-attributename") ritorna il valore di -attributename
+master.wm_attributes("-attributename", attributevalue) imposta il valore di attributevalue su attributename
+es: master.wm_attributes("-fullscreen") ritorna True se fullscreen o false se in modalità finestra
+    master.wm_attributes("-fullscreen", True) imposta il fullscreen
+
+2
+destroy() chiude la finestra e ferma il mainloop()
+quit() chuide solo la finestra
+
+3
+il garbage collector è... garbage.
+più volte nel codice vedrete assegnate a delle variabili inutilizzate dei widget o delle immagini, è obbligatorio farlo sennò il garbage collector cancella la risorsa prima che venga visualizzata
+
+4
+root, che si può ottenere con winfo_toplelevel() ha alcuni attibuti raggiungibili mettendo il loro nome tra parentesi quadre e virgolette
+Ad esempio winfo_toplelevel()["menu"] ci ridarà un oggetto Menu (la barra dei menu) che abbiamo precedentemente assegnato alla top window quando abbiamo creato il Menu
+
+5
+Le barre dei menu
+menubar = Menu(toplevel)                                        # crea la barra dei menu
+nomemenu = Menu(menubar)                                        # crea un sottomenu 
+menubar.add_cascade(label = "Nome Sottomenu", menu = nomemenu)  # aggiunge il sottomenu alla barra dei menu
+
+6
+I nomi sono importanti
+Quando create un widget dategli un nome, il nome univoco vi permetterà di poterlo referencare ovunque nel programma senza dover far diventare tutto attributo di classe
+TUTTI I WIDGET DEVONO AVERE UN NOME 
+Per assegnare un nome, al momento della creazione bisogna specificare il parametro name = "nomewidget"
+https://stackoverflow.com/questions/30004505/how-do-you-find-a-unique-and-constant-id-of-a-widget/30005893#30005893
+"Under the hood, tkinter uses tk. In tk, every widget has a name, and lives in a hierarchy expressed via dot notation. In tk you must define a name when creating a widget; this is something that tkinter does for you. When you see a widget name like ".1234567890.0987654f321", that means that the parent has the internal name of ".1234567890" and the widget is named "0987654321".
+You can override the auto-generated name by giving a name when you create a widget, using the name parameter. You can then use str to get the name."
+Si usa il metodo nametowidget("nome.con.path.completo.al.widget") per richiamare un oggetto, funzione chiamata sul master
+es:
+Per accedere ad un sottomenu, di una menubar della finestra principale, useremo self.master.nametowidget(".menubar.settingsmenu")
+Il primo . indica il root widget, menubar è il nome del widget della barra dei menu, settingsmenu è il nome del sottomenu
+
+7
+self.winfo_toplevel() ridà sempre il root di tkinter
+
+8
+è più formalmente corretto usare CLASSNAME.function(self) invece di self.function()
