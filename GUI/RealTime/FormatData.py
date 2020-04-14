@@ -25,18 +25,21 @@ class FormatData:
     
     @classmethod
     def formatData(cls, encodedMessage):
-        encodedMessage = list(encodedMessage)
-        mask = 0x3F
-        if len(encodedMessage)%4 != 1:
-            return ['E', 'R', 'R', 'O', 'R']
+        if encodedMessage in [bytes([0x3F]) + b'ReadError', bytes([0x0A]) + b'ReadError', bytes([0x0A]) + b'ReadError']:
+            return ['E', 'R', 'R', 'O', 'R', encodedMessage[0] & 0x3F]
+  
+        elif len(encodedMessage) % 4 != 1 or (encodedMessage == b'ReadError'):      #We receive a number of bytes multiple of 4, plus the byte which gives us the headerIndex of the block received            
+            return ['E', 'R', 'R', 'O', 'R']    #if it is False (it includes also the case of receiving 'ReadError') returns ['E', 'R', 'R', 'O', 'R'] to emphasize that an error has occured
+        
         else:
+            encodedMessage = list(encodedMessage)
             decodedMessage = []
-            headerIndex=encodedMessage[0]&mask
+            headerIndex=encodedMessage[0] & 0x3F
             decodedMessage.append(headerIndex)
             for i in range(0, len(encodedMessage)//4):
-                firstByte = ((encodedMessage[4*i+1] & mask)<<2 | (encodedMessage[4*i+2] & mask)>>4) & 0xFF
-                secondByte = ((encodedMessage[4*i+2] & mask) << 4 | (encodedMessage[4*i+3] & mask)>>2) & 0xFF
-                thirdByte = ((encodedMessage[4*i+3] & mask) << 6 | (encodedMessage[4*i+4] & mask)) & 0xFF
+                firstByte = ((encodedMessage[4*i+1] & 0x3F)<<2 | (encodedMessage[4*i+2] & 0x3F)>>4) & 0xFF
+                secondByte = ((encodedMessage[4*i+2] & 0x3F) << 4 | (encodedMessage[4*i+3] & 0x3F)>>2) & 0xFF
+                thirdByte = ((encodedMessage[4*i+3] & 0x3F) << 6 | (encodedMessage[4*i+4] & 0x3F)) & 0xFF
                 decodedMessage.append(firstByte)
                 decodedMessage.append(secondByte)
                 decodedMessage.append(thirdByte)
@@ -76,8 +79,8 @@ class FormatData:
                 dataFrame.setWheelSensorsFrame("countRDx", (int(decodedMessage[32] & 0xF0) << 4) | int(decodedMessage[31]))
                 dataFrame.setWheelSensorsFrame("dtR", int(decodedMessage[33]))
                 
-                # dataFrame.setWheelSensorsFrame("vel_rsx", SPEED_VALUE)
-                # dataFrame.setWheelSensorsFrame("vel_rdx", SPEED_VALUE)
+                # dataFrame.setWheelSensorsFrame("vel_rsx", SPEED_VALUE)    # NOT IN USE (PHONIC WHEEL'S SPECS NOT AVAILABLE)
+                # dataFrame.setWheelSensorsFrame("vel_rdx", SPEED_VALUE)    # NOT IN USE (PHONIC WHEEL'S SPECS NOT AVAILABLE)
 
                 dataFrame.setEngineFrame("gear", int(decodedMessage[34]))
                 
@@ -120,5 +123,12 @@ class FormatData:
             dataFrame.setGPSFrame("longitude", ((int(decodedMessage[15]) << 24) | (int(decodedMessage[16]) << 16) | (int(decodedMessage[17]) << 8) | int(decodedMessage[18])) + ((float((int(decodedMessage[19]) << 24) | (int(decodedMessage[20]) << 16) | (int(decodedMessage[21]) << 8) | int(decodedMessage[22]))) / 100000))
             dataFrame.setGPSFrame("velGPS", float(decodedMessage[23]) + ((float(decodedMessage[23])) / 10))
 
-            fileHandler.write4Hz()
+            fileHandler.write4Hz()      
+
+        elif decodedMessage[0:5] == ['E', 'R', 'R', 'O', 'R'] :
+            if len(decodedMessage) == 6:
+                fileHandler.writeReadError(decodedMessage[5])
+            else:   
+                fileHandler.writeReadError()
+            
             

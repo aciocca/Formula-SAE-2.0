@@ -21,6 +21,10 @@ class FileHandler:
     write4Hz():
         writes new 4Hz data inside the .csv file.
         In order to save data carefully it closes the file every 20 writings (5 seconds)
+
+    writeReadError():
+        used in formatData.setData() to fill the .csv files' fields with 'ReadError'. 
+        Since we do not know which block is transmitting, a line full of 'ReadError' will be added to every file (100Hz, 10Hz, 4Hz)     
     '''
 
 #Creates a FileHandler object to save data in a CSV file called "dd_mm_yyyy  hh_mm__ss.csv"
@@ -134,3 +138,18 @@ class FileHandler:
             self.__file4Hz.close()
             self.__file4Hz = open(self.__name4Hz, 'a', newline='')
             self.__writerFile4Hz = csv.writer(self.__file4Hz, delimiter=';', dialect='excel')
+    
+    def writeReadError(self, *args):
+        if len(args) > 0:
+            if args[0] == 0x3F:
+                self.__writerFile100Hz.writerow(['ReadError'] * len(self.__fieldnames100Hz))
+            elif args[0] == 0x0A:
+                self.__writerFile10Hz.writerow(['ReadError'] * len(self.__fieldnames10Hz))
+            elif args[0] == 0x04:
+                self.__writerFile4Hz.writerow(['ReadError'] * len(self.__fieldnames4Hz))
+
+
+        elif len(args) == 0:   
+            self.__writerFile100Hz.writerow(['ReadError'] * len(self.__fieldnames100Hz))
+            self.__writerFile10Hz.writerow(['ReadError'] * len(self.__fieldnames10Hz))
+            self.__writerFile4Hz.writerow(['ReadError'] * len(self.__fieldnames4Hz))

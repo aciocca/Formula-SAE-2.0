@@ -83,7 +83,7 @@ scanCOMs():
                         messageRead+=(self.__serialInstance.read(1))
                     break
                 elif attempt>=bytesToRead:
-                    return b'ErrorReading'           
+                    return b'ReadError'           
                 else:
                     attempt+=1
 
@@ -99,8 +99,10 @@ scanCOMs():
                         charReceived=self.__serialInstance.read(size=1)
                     if charReceived==kwargs["endChar"]:
                         break
-                elif attempt>=200:
-                   return b'ErrorReading'
+                elif attempt>=200 and len(messageRead) > 0:
+                   return messageRead[0] + b'ReadError'
+                elif attempt>=200 and not len(messageRead) > 0:
+                   return b'ReadError'
                 else:
                     attempt+=1
         else:
