@@ -56,12 +56,12 @@ L'MVC garantisce un'ottimo grado di modularità al codice, permettendo il lavoro
 	Il Model in un thread a parte avrà un loop dove chiederà dati in continuazione al seriale
 	3)Il loop:
 		3a) Decodifica
-		Una volta letti dei dati dal seriale, sottoforma di stringhe di byte, sempre il model si occuperà di decodificarli direttamente all'interno dello stesso loop
+		Una volta letti dei dati dal seriale(N.B. CON IL PRIMO THREAD!), sottoforma di stringhe di byte, sempre il model si occuperà di decodificarli (IN UN ALTRO THREAD RISPETTO A QUELLO DI LETTURA) direttamente all'interno dello stesso loop
 		3b) Aggiornamento
 		Il Model aggiorna qui le variabili che poi successivamente verranno visualizzate dal View al prossimo loop di tkinter -D gestire lock delle variabili!! 
 		-D Si potrebbe chiamare qui il controller (sul thread principale) una volta finito di aggiornare le variabili per avvertire il view dicendogli che ci sono dati nuovi da leggere, facendo qui il 
 		check dell'accesso alle variabili
-		3c) Salvataggio su file 
+		3c) Salvataggio su file (NELLO STESSO THREAD DELLA LETTURA)
 		Sempre nello stesso loop il model salva su dei file .csv, uno per ognuno dei tre blocchi di dati, chiudendo e salvando sul disco ogni {X} loop per evitare perdite di dati dovute ad eventuali crash del sistema
 	4)L'aggiornamento del view
 	Ad ogni tick di tkinter il view chiede al controller se ci sono nuovi dati, se si allora dice al controller di copiare tutte le variabili dal model al view (le variabili del view saranno di tipo tkString()) 
