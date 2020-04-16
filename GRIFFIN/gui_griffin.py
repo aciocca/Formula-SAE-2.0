@@ -1,8 +1,10 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-import gui_logic as lg
+import gui_logic as gl
 import gui_connectiontab as cntab
 import gui_textviewtab as txtab 
+
+
 class GRIFFINGUI(tk.Frame):
 
     def toggle_fullscreen(self, event=None):
@@ -14,17 +16,18 @@ class GRIFFINGUI(tk.Frame):
     def onclose(self):
         # Eseguito quando viene chiusa la finestra, le funzioni di cleanup vengono messe qui
         # Per l'uso di destroy vedi (2)
+        self.logic_handler.go_offline()
         self.winfo_toplevel().destroy()
         
     def configure_window_defaults(self):
+        top_level_window = self.winfo_toplevel()
         # Contiene tutti i parametri di default della finestra
-        self.winfo_toplevel().bind("<F11>", self.toggle_fullscreen)
-        self.winfo_toplevel().bind("<F3>", self.test_status)
-        self.winfo_toplevel().minsize(800, 600)
-        self.winfo_toplevel().title("GRIFFIN 2020 Edition")
-        self.winfo_toplevel().aspect(4,3,4,3)
-        self.winfo_toplevel().protocol("WM_DELETE_WINDOW", self.onclose)
-        self.winfo_toplevel().iconbitmap("res/griffin.ico")
+        top_level_window.bind("<F11>", self.toggle_fullscreen)
+        top_level_window.minsize(800, 600)
+        top_level_window.title("GRIFFIN 2020 Edition")
+        top_level_window.aspect(4,3,4,3)
+        top_level_window.protocol("WM_DELETE_WINDOW", self.onclose)
+        top_level_window.iconbitmap("res/griffin.ico")
     
     def create_menubar(self):
         # Si occupa delle barre dei menu (5) per ulteriori info
@@ -53,18 +56,14 @@ class GRIFFINGUI(tk.Frame):
         # abbiamo un modulo per tab
         # text data tab
         # virtual cockpit tab
-        cntab.ConnectionTab(griffin_notebook).build_connectiontab()
+        cntab.ConnectionTab(griffin_notebook, self.logic_handler).build_connectiontab()
         txtab.TextviewTab(griffin_notebook)
-
 
     def create_statusbar(self):
         # Gestisce la statusbar in fondo alla finestra, sempre visibile, qualsiasi sia il tab aperto sopra
-        statusbar = tk.Label(self.winfo_toplevel(), name = "statusbar", bd = 1, relief = tk.SUNKEN, anchor = tk.W, textvariable = self.connectionstats.status)
+        statusbar = tk.Label(self.winfo_toplevel(), name = "statusbar", bd = 1, relief = tk.SUNKEN, anchor = tk.W, textvariable = self.logic_handler.status)
         statusbar.pack(side = tk.BOTTOM, fill = tk.X)
 
-    def test_status(self, event = None):
-        self.connectionstats.go_online(self.winfo_toplevel())
-        
     def assemble_widgets(self):
         # Vedi 8 per sintassi
         GRIFFINGUI.create_menubar(self)
@@ -80,7 +79,7 @@ class GRIFFINGUI(tk.Frame):
         self.winfo_toplevel().columnconfigure(0)
         self.winfo_toplevel().grid()
         # Crea un oggetto ConnectionStatus dal modulo gui_logic che conterrà le informazioni sulla connessione, viene utilizzato dalla statusbar
-        self.connectionstats = lg.ConnectionStatus(self.winfo_toplevel())
+        self.logic_handler = gl.GUI_LOGIC_HANDLER(self.winfo_toplevel())
         self.assemble_widgets()
         
 

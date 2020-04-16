@@ -36,9 +36,38 @@ Si usa il metodo nametowidget("nome.con.path.completo.al.widget") per richiamare
 es:
 Per accedere ad un sottomenu, di una menubar della finestra principale, useremo self.master.nametowidget(".menubar.settingsmenu")
 Il primo . indica il root widget, menubar è il nome del widget della barra dei menu, settingsmenu è il nome del sottomenu
+nametowidget può essere chiamato su qualsiasi widget, ma vorrà come argomento SEMPRE la path assoluta al widget
+ed:
+ho .frame1.frame2.label
+per ottenere label dovrò comunque fare frame1.nametowidget(.frame1.frame2.label) o frame2.nametowidget(.frame1.frame2.label)
 
 7
 self.winfo_toplevel() ridà sempre il root di tkinter
 
 8
 è più formalmente corretto usare CLASSNAME.function(self) invece di self.function()
+
+9
+widget.master è l'attributo con il master del widget
+es:
+ho .frame.label
+Posso riottenere il frame facendo label.master
+
+10
+I parametri inseriti alla creazione di un widget (es in caps: lab = Label(master = MASTER, value = "LABEL_PROVA")) N O N sono attributi del widget creato, quindi non potremo
+per esempio accederci usando lab.value, piuttosto dovremmo usare lab.cget("nome_parametro"). Attenzione, così però non si possono comunque riottenere le variabili assegnate ad
+oggetti tipo i checkbox, in quanto invece del Boolean/Int/StringVar ritornerà un  '_tkinter.Tcl_Obj' sul quale è impossibile lavorare
+
+11
+tkinter events
+https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
+Ogni volta che si binda una funzione ad un evento (es: portCombobox.bind("<<ComboboxSelected>>", partial(function, parameter))), bisogna sempre aspettarsi un oggetto di tipo tk.Event 
+Quindi la funzione chiamata deve essere del tipo 
+def function(parameter, event)
+
+12
+partial
+https://docs.python.org/3.8/library/functools.html#functools.partial
+Noi lo utilizziamo per poter assegnare una funzione con argomenti ad un'azione di un widget di tkinter, si potrebbero usare anche le lambda
+
+
