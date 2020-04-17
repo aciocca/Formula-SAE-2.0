@@ -27,61 +27,78 @@ class FileHandler:
         Since we do not know which block is transmitting, a line full of 'ReadError' will be added to every file (100Hz, 10Hz, 4Hz)     
     '''
 
-#Creates a FileHandler object to save data in a CSV file called "dd_mm_yyyy  hh_mm__ss.csv"
+#Creates a FileHandler object to save data in a CSV file called "dd_mm_yyyy_hh_mm_ss.csv"
 
     def __init__(self, dataFrame):
         self.__dataFrame = dataFrame
-        nome = time.strftime("%a_%d_%b_%Y") + " " + time.strftime("%H_%M_%S_")
+        nome = time.strftime("%a_%d_%b_%Y") + "_" + time.strftime("%H_%M_%S_")
         self.__name100Hz = nome + "100Hz.csv"
         self.__name10Hz = nome + "10Hz.csv"
         self.__name4Hz = nome + "4Hz.csv"
-        self.__fieldnames100Hz  = ['rpm', 'tps', 'accel_x', 'accel_y', 'accel_z', 'gyro_x', 'gyro_y', 'gyro_z', 'pot_fsx',  'pot_fdx', 'pot_FAccuracy', 'pot_rsx',  'pot_rdx', 'pot_RAccuracy','steeringEncoder', 'vel_fsx', 'vel_fdx', 'vel_rsx', 'vel_rdx', 'gear']
-        self.__fieldnames10Hz  = ['t_h20', 't_air', 't_oil', 'vbb', 'lambda1_avg', 'lambda1_raw', 'k_lambda1', 'inj_low', 'inj_high']
-        self.__fieldnames4Hz = ['hour', 'minutes', 'seconds', 'micro_seconds', 'n_sats', 'fixQuality', 'e_w', 'n_s', 'hdop', 'latitude', 'longitude', 'velGPS']
+       
+        #Getting dictionaries from a dataFrame object
+        self.__engineFrame = self.__dataFrame.getEngineFrame()
+        self.__wheelFrame = self.__dataFrame.getWheelSensorsFrame()
+        self.__gyroscopeFrame = self.__dataFrame.getGyroscopeFrame()
+        self.__GPSFrame = self.__dataFrame.getGPSFrame()
+        
+        #Dictionaries used to write data inside the .csv file (sorted by frequency)
+        self.__FrameValues100Hz = {'rpm': 0, 'tps': 0.0, 'accel_x': 0.0, 'accel_y': 0.0, 'accel_z': 0.0, 'gyro_x': 0.0, 'gyro_y': 0.0, 'gyro_z': 0.0, 'pot_fsx': 0.0, 'pot_fdx': 0.0, 'pot_FAccuracy': 0.0, 'pot_rsx': 0.0, 'pot_rdx': 0.0, 'pot_RAccuracy': 0.0,'steeringEncoder': 0.0, 'vel_fsx': 0.0, 'vel_fdx': 0.0, 'vel_rsx': 0.0, 'vel_rdx': 0.0, 'gear': 0}       
+        self.__FrameValues10Hz = {'t_h20': 0, 't_air': 0, 't_oil': 0, 'vbb': 0.0, 'lambda1_avg': 0.0, 'lambda1_raw': 0.0, 'k_lambda1': 0.0, 'inj_low': 0.0, 'inj_high': 0.0}  
+        self.__FrameValues4Hz = {'hour': 0, 'minutes': 0, 'seconds': 0, 'micro_seconds': 0.0, 'n_sats': 0, 'fixQuality': 0, 'e_w': "", 'n_s': "", 'hdop': 0.0, 'latitude': 0.0, 'longitude': 0.0, 'velGPS': 0.0}
+                
+        #LINES WRITTEN (USED TO KNOW THE FILE HAS TO BE CLOSED AND REOPENED)
         self.__lineNumber100Hz = 0
         self.__lineNumber10Hz = 0
         self.__lineNumber4Hz = 0
 
+        #CREATION OF THE dd_mm_yyyy_hh_mm_ss_100Hz.csv FILE
         self.__file100Hz = open(self.__name100Hz, 'w', newline='')
         self.__writerFile100Hz = csv.writer(self.__file100Hz, delimiter=';', dialect='excel')
-        self.__writerFile100Hz.writerow(self.__fieldnames100Hz)
+        self.__writerFile100Hz.writerow(list(self.__FrameValues100Hz.keys()))
         
+        #CREATION OF THE dd_mm_yyyy_hh_mm_ss_10Hz.csv FILE
         self.__file10Hz = open(self.__name10Hz, 'w', newline='')
         self.__writerFile10Hz = csv.writer(self.__file10Hz, delimiter=';', dialect='excel')
-        self.__writerFile10Hz.writerow(self.__fieldnames10Hz)
+        self.__writerFile10Hz.writerow(list(self.__FrameValues10Hz.keys()))
         
+        #CREATION OF THE dd_mm_yyyy_hh_mm_ss_4Hz.csv FILE
         self.__file4Hz = open(self.__name4Hz, 'w', newline='')
         self.__writerFile4Hz = csv.writer(self.__file4Hz, delimiter=';', dialect='excel')
-        self.__writerFile4Hz.writerow(self.__fieldnames4Hz)
-        
+        self.__writerFile4Hz.writerow(list(self.__FrameValues4Hz.keys()))
+
+       
 #Appends data to the file created before
     def write100Hz(self):
-        engineFrame100Hz = self.__dataFrame.getEngineFrame()
-        wheelFrame100Hz = self.__dataFrame.getWheelSensorsFrame()
-        gyroscopeFrame100Hz = self.__dataFrame.getGyroscopeFrame()
-        FrameValues100Hz = []
-        FrameValues100Hz.append(engineFrame100Hz["rpm"])
-        FrameValues100Hz.append(engineFrame100Hz["tps"])
-        FrameValues100Hz.append(gyroscopeFrame100Hz['accel_x'])
-        FrameValues100Hz.append(gyroscopeFrame100Hz['accel_y'])
-        FrameValues100Hz.append(gyroscopeFrame100Hz['accel_z'])
-        FrameValues100Hz.append(gyroscopeFrame100Hz['gyro_x'])
-        FrameValues100Hz.append(gyroscopeFrame100Hz['gyro_y'])
-        FrameValues100Hz.append(gyroscopeFrame100Hz['gyro_z'])
-        FrameValues100Hz.append(wheelFrame100Hz['pot_fsx'])
-        FrameValues100Hz.append(wheelFrame100Hz['pot_fdx'])
-        FrameValues100Hz.append(wheelFrame100Hz['potFAccuracy'])
-        FrameValues100Hz.append(wheelFrame100Hz['pot_rsx'])
-        FrameValues100Hz.append(wheelFrame100Hz['pot_rdx'])
-        FrameValues100Hz.append(wheelFrame100Hz['potRAccuracy'])
-        FrameValues100Hz.append(wheelFrame100Hz['steeringEncoder'])
-        FrameValues100Hz.append(wheelFrame100Hz['vel_fsx'])
-        FrameValues100Hz.append(wheelFrame100Hz['vel_fdx'])
-        FrameValues100Hz.append(wheelFrame100Hz['vel_rsx'])
-        FrameValues100Hz.append(wheelFrame100Hz['vel_rdx'])
-        FrameValues100Hz.append(engineFrame100Hz['gear'])
+        #getting the updated dictionaries from the dataFrame object
+        self.__engineFrame = self.__dataFrame.getEngineFrame()
+        self.__wheelFrame = self.__dataFrame.getWheelSensorsFrame()
+        self.__gyroscopeFrame = self.__dataFrame.getGyroscopeFrame()
 
-        self.__writerFile100Hz.writerow(FrameValues100Hz)
+        #Updating the "writing" dictionary with new values (a loop isn't used because three different frames are needed)
+        self.__FrameValues100Hz["rpm"] = self.__engineFrame["rpm"]
+        self.__FrameValues100Hz["tps"] = self.__engineFrame["tps"]
+        self.__FrameValues100Hz['accel_x'] = self.__gyroscopeFrame['accel_x']
+        self.__FrameValues100Hz['accel_y'] = self.__gyroscopeFrame['accel_y']
+        self.__FrameValues100Hz['accel_z'] = self.__gyroscopeFrame['accel_z']
+        self.__FrameValues100Hz['gyro_x'] = self.__gyroscopeFrame['gyro_x']
+        self.__FrameValues100Hz['gyro_y'] = self.__gyroscopeFrame['gyro_y']
+        self.__FrameValues100Hz['gyro_z'] = self.__gyroscopeFrame['gyro_z']
+        self.__FrameValues100Hz['pot_fsx'] = self.__wheelFrame['pot_fsx']
+        self.__FrameValues100Hz['pot_fdx'] = self.__wheelFrame['pot_fdx']
+        self.__FrameValues100Hz['potFAccuracy'] = self.__wheelFrame['potFAccuracy']
+        self.__FrameValues100Hz['pot_rsx'] = self.__wheelFrame['pot_rsx']
+        self.__FrameValues100Hz['pot_rdx'] = self.__wheelFrame['pot_rdx']
+        self.__FrameValues100Hz['potRAccuracy'] = self.__wheelFrame['potRAccuracy']
+        self.__FrameValues100Hz['steeringEncoder'] = self.__wheelFrame['steeringEncoder']
+        self.__FrameValues100Hz['vel_fsx'] = self.__wheelFrame['vel_fsx']
+        self.__FrameValues100Hz['vel_fdx'] = self.__wheelFrame['vel_fdx']
+        self.__FrameValues100Hz['vel_rsx'] = self.__wheelFrame['vel_rsx']
+        self.__FrameValues100Hz['vel_rdx'] = self.__wheelFrame['vel_rdx']
+        self.__FrameValues100Hz['gear'] = self.__wheelFrame['gear']
+
+        #Writing the whole line in dd_mm_yyyy_hh_mm_ss_100Hz.csv file
+        self.__writerFile100Hz.writerow(list(self.__FrameValues100Hz.values()))
 
         # CLOSES THE FILE EVERY 500 WRITINGS
         self.__lineNumber100Hz = (self.__lineNumber100Hz + 1) % 500
@@ -90,21 +107,16 @@ class FileHandler:
             self.__file100Hz = open(self.__name100Hz, 'a', newline='')
             self.__writerFile100Hz = csv.writer(self.__file100Hz, delimiter=';', dialect='excel')
 
-
     def write10Hz(self):
-        engineFrame10Hz = self.__dataFrame.getEngineFrame()
-        FrameValues10Hz = []
-        FrameValues10Hz.append(engineFrame10Hz["t_h20"])     
-        FrameValues10Hz.append(engineFrame10Hz["t_air"])
-        FrameValues10Hz.append(engineFrame10Hz["t_oil"])
-        FrameValues10Hz.append(engineFrame10Hz["vbb"])
-        FrameValues10Hz.append(engineFrame10Hz["lambda1_avg"])
-        FrameValues10Hz.append(engineFrame10Hz["lambda1_raw"])
-        FrameValues10Hz.append(engineFrame10Hz["k_lambda1"])
-        FrameValues10Hz.append(engineFrame10Hz["inj_low"])
-        FrameValues10Hz.append(engineFrame10Hz["inj_high"])
+        #getting the updated dictionariy from the dataFrame object (only engineFrame is needed)
+        self.__engineFrame = self.__dataFrame.getEngineFrame()
+        
+        #Updating the "writing" dictionary
+        for key in self.__FrameValues10Hz.keys():
+            self.__FrameValues10Hz[key] = self.__engineFrame[key]
 
-        self.__writerFile10Hz.writerow(FrameValues10Hz)
+        #Writing the whole line in dd_mm_yyyy_hh_mm_ss_10Hz.csv
+        self.__writerFile10Hz.writerow(list(self.__FrameValues10Hz.values()))
         
         # CLOSES THE FILE EVERY 50 WRITINGS
         self.__lineNumber10Hz = (self.__lineNumber10Hz + 1) % 50
@@ -114,23 +126,15 @@ class FileHandler:
             self.__writerFile10Hz = csv.writer(self.__file10Hz, delimiter=';', dialect='excel')
     
     def write4Hz(self):
-        GPSFrame4Hz = self.__dataFrame.getGPSFrame()
-        FrameValues4Hz = []
-        FrameValues4Hz.append(GPSFrame4Hz['hour'])
-        FrameValues4Hz.append(GPSFrame4Hz['minutes'])
-        FrameValues4Hz.append(GPSFrame4Hz['seconds'])
-        FrameValues4Hz.append(GPSFrame4Hz['micro_seconds'])
-        FrameValues4Hz.append(GPSFrame4Hz['n_sats'])
-        FrameValues4Hz.append(GPSFrame4Hz['fixQuality'])
-        FrameValues4Hz.append(GPSFrame4Hz['e_w'])
-        FrameValues4Hz.append(GPSFrame4Hz['n_s'])
-        FrameValues4Hz.append(GPSFrame4Hz['hdop'])
-        FrameValues4Hz.append(GPSFrame4Hz['latitude'])
-        FrameValues4Hz.append(GPSFrame4Hz['longitude'])
-        FrameValues4Hz.append(GPSFrame4Hz['velGPS'])
+        #getting the updated dictionariy from the dataFrame object (only GPSFrame is needed)
+        self.__GPSFrame = self.__dataFrame.getGPSFrame()
+        
+        #Updating the "writing" dictionary
+        for key in self.__FrameValues4Hz.keys():
+            self.__FrameValues4Hz[key] = self.__GPSFrame[key]
 
-
-        self.__writerFile4Hz.writerow(FrameValues4Hz)
+        #Writing the whole line in dd_mm_yyyy_hh_mm_ss_4Hz.csv
+        self.__writerFile4Hz.writerow(list(self.__FrameValues4Hz.values()))
 
         # CLOSES THE FILE EVERY 20 WRITINGS
         self.__lineNumber4Hz = (self.__lineNumber4Hz + 1) % 20
@@ -139,17 +143,17 @@ class FileHandler:
             self.__file4Hz = open(self.__name4Hz, 'a', newline='')
             self.__writerFile4Hz = csv.writer(self.__file4Hz, delimiter=';', dialect='excel')
     
+    #if the headerIndex has been received writes "ReadError" in the whole line of the file. If not received, "ReadError" will be written in the last line of each file
     def writeReadError(self, *args):
         if len(args) > 0:
             if args[0] == 0x3F:
-                self.__writerFile100Hz.writerow(['ReadError'] * len(self.__fieldnames100Hz))
+                self.__writerFile100Hz.writerow(['ReadError'] * len(self.__FrameValues100Hz.keys()))
             elif args[0] == 0x0A:
-                self.__writerFile10Hz.writerow(['ReadError'] * len(self.__fieldnames10Hz))
+                self.__writerFile10Hz.writerow(['ReadError'] * len(self.__FrameValues10Hz.keys()))
             elif args[0] == 0x04:
-                self.__writerFile4Hz.writerow(['ReadError'] * len(self.__fieldnames4Hz))
+                self.__writerFile4Hz.writerow(['ReadError'] * len(self.__FrameValues4Hz.keys()))
 
-
-        elif len(args) == 0:   
-            self.__writerFile100Hz.writerow(['ReadError'] * len(self.__fieldnames100Hz))
-            self.__writerFile10Hz.writerow(['ReadError'] * len(self.__fieldnames10Hz))
-            self.__writerFile4Hz.writerow(['ReadError'] * len(self.__fieldnames4Hz))
+        else:   
+            self.__writerFile100Hz.writerow(['ReadError'] * len(self.__FrameValues100Hz.keys()))
+            self.__writerFile10Hz.writerow(['ReadError'] * len(self.__FrameValues10Hz.keys()))
+            self.__writerFile4Hz.writerow(['ReadError'] * len(self.__FrameValues4Hz.keys()))

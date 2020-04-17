@@ -47,7 +47,7 @@ class FormatData:
 
     @classmethod
     def setData(cls, dataFrame, encodedMessage, fileHandler):
-        decodedMessage=FormatData.formatData(encodedMessage)
+        decodedMessage = FormatData.formatData(encodedMessage)
         if (decodedMessage[0]==0x3F):
                 dataFrame.setEngineFrame("rpm", int(decodedMessage[1]) << 8 | int(decodedMessage[2]))
                 dataFrame.setEngineFrame("tps", (float(int(decodedMessage[3]) << 8 | int (decodedMessage[4]))) / 10)
