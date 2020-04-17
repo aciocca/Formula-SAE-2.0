@@ -72,22 +72,8 @@ scanCOMs():
             bytesToRead = kwargs["size"]
         else:
             bytesToRead = self.__bytesToRead
-        
-        if "startChar" in kwargs.keys() and not "endChar" in kwargs.keys():
-            attempt=0
-            startChar = kwargs["startChar"]
-            while True:
-                charReceived = self.__serialInstance.read(size=1)
-                if charReceived == startChar:
-                    for i in range(0, bytesToRead):
-                        messageRead+=(self.__serialInstance.read(1))
-                    break
-                elif attempt>=bytesToRead:
-                    return b'ReadError'           
-                else:
-                    attempt+=1
 
-        elif "startChar" in kwargs.keys() and "endChar" in kwargs.keys():
+        if "startChar" in kwargs.keys() and "endChar" in kwargs.keys():
             attempt=0
             startChar = kwargs["startChar"]
             while True:
@@ -101,11 +87,29 @@ scanCOMs():
                         break
                 elif attempt>=200:
                     if len(messageRead) > 0:
-                        return messageRead[0] + b'ReadError'
+                        if messageRead[0] == bytes([0x3F]):
+                            return messageRead[0] + b'ReadError'
+                        else:
+                            return b'ReadError'
                     else:
                         return b'ReadError'
                 else:
                     attempt+=1
+        
+        elif "startChar" in kwargs.keys() and not "endChar" in kwargs.keys():
+            attempt=0
+            startChar = kwargs["startChar"]
+            while True:
+                charReceived = self.__serialInstance.read(size=1)
+                if charReceived == startChar:
+                    for i in range(0, bytesToRead):
+                        messageRead+=(self.__serialInstance.read(1))
+                    break
+                elif attempt>=bytesToRead:
+                    return b'ReadError'           
+                else:
+                    attempt+=1
+
         else:
             for i in range(0, bytesToRead):
                 messageRead+=(self.__serialInstance.read(1))
