@@ -57,7 +57,7 @@ class GRIFFINGUI(tk.Frame):
         # text data tab
         # virtual cockpit tab
         cntab.ConnectionTab(griffin_notebook, self.logic_handler).build_connectiontab()
-        txtab.TextviewTab(griffin_notebook)
+        txtab.TextViewTab(griffin_notebook, self.logic_handler).build_textviewtab()
 
     def create_statusbar(self):
         # Gestisce la statusbar in fondo alla finestra, sempre visibile, qualsiasi sia il tab aperto sopra
