@@ -6,8 +6,9 @@ def f1(obj):
     obj.openPort()
 
     while True:
-        a = obj.readData(startChar = b'\x02', endChar=b'\x03')
-        obj.sh_fh_pipe.send(a)
+        dataReaded = obj.readData(startChar = b'\x02', endChar=b'\x03')
+        # add logs
+        obj.sh_fh_pipe.send(dataReaded)
 
     obj.closePort()
 
@@ -79,7 +80,6 @@ scanCOMs():
         self.sh_fh_pipe = sh_fh_pipe
       
     def run(self):
-        print("funzione run")
         self.p = Process(target=f1, args=(self,))
         self.p.start()
     

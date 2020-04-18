@@ -4,11 +4,10 @@ from FormatData import FormatData as fd
 from multiprocessing import Process, Pipe
 
 def f(obj):
-    print("funzione F")
-    # while True:
-    #     a = obj.sh_fh_pipe.recv()
-    #     fd.setData(obj.__dataFrame, a, obj)
-    #     # fh_gui.send(self.__dataFrame)
+    while True:
+        a = obj.sh_fh_pipe.recv()
+        fd.setData(obj.getDataFrame(), a, obj)
+        # fh_gui.send(self.__dataFrame)
 
 class FileHandler:
 
@@ -88,6 +87,8 @@ class FileHandler:
     def join(self):
         self.p.join()
 
+    def getDataFrame(self):
+        return self.__dataFrame
 
 #Appends data to the file created before
     def write100Hz(self):
