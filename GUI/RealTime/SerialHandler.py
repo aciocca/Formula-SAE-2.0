@@ -1,5 +1,15 @@
 import serial
 from time import sleep
+from multiprocessing import Process, Pipe
+
+def f1(obj):
+    obj.openPort()
+
+    while True:
+        a = obj.readData(startChar = b'\x02', endChar=b'\x03')
+        obj.sh_fh_pipe.send(a)
+
+    obj.closePort()
 
 class SerialHandler:
 
@@ -34,7 +44,7 @@ class SerialHandler:
 scanCOMs():
     return a list that contains the available ports (WORKS ONLY WITH WINDOWS O.S.)'''
 
-    def __init__(self, name, baudrate, **kwargs):
+    def __init__(self, name, baudrate, sh_fh_pipe,**kwargs):
         self.__portName=name
         self.__baudRate=baudrate
 
@@ -65,7 +75,17 @@ scanCOMs():
         
         self.__serialInstance = serial.Serial(port=self.__portName, baudrate=self.__baudRate, bytesize=self.__wordLength, parity=self.__wordParity, stopbits=self.__stopBit, timeout=self.__timeout)
         self.__serialInstance.close()
+
+        self.sh_fh_pipe = sh_fh_pipe
+      
+    def run(self):
+        print("funzione run")
+        self.p = Process(target=f1, args=(self,))
+        self.p.start()
     
+    def join(self):
+        self.p.join()
+
     def readData(self, **kwargs):
         messageRead = bytes()
         if "size" in kwargs.keys():

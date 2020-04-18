@@ -1,5 +1,14 @@
 import csv, time
-from GUI.RealTime import DataFrame
+# from GUI.RealTime import DataFrame
+from FormatData import FormatData as fd
+from multiprocessing import Process, Pipe
+
+def f(obj):
+    print("funzione F")
+    # while True:
+    #     a = obj.sh_fh_pipe.recv()
+    #     fd.setData(obj.__dataFrame, a, obj)
+    #     # fh_gui.send(self.__dataFrame)
 
 class FileHandler:
 
@@ -29,7 +38,7 @@ class FileHandler:
 
 #Creates a FileHandler object to save data in a CSV file called "dd_mm_yyyy_hh_mm_ss.csv"
 
-    def __init__(self, dataFrame):
+    def __init__(self, dataFrame, sh_fh_pipe, fh_gui_pipe):
         self.__dataFrame = dataFrame
         nome = time.strftime("%a_%d_%b_%Y") + "_" + time.strftime("%H_%M_%S_")
         self.__name100Hz = nome + "100Hz.csv"
@@ -67,7 +76,19 @@ class FileHandler:
         self.__writerFile4Hz = csv.writer(self.__file4Hz, delimiter=';', dialect='excel')
         self.__writerFile4Hz.writerow(list(self.__FrameValues4Hz.keys()))
 
-       
+        # PIPES
+        self.sh_fh_pipe = sh_fh_pipe
+        self.fh_gui_pipe = fh_gui_pipe
+
+    def run(self):
+        print("Funzione Run")
+        self.p = Process(target=f, args=(self,))
+        self.p.start()
+
+    def join(self):
+        self.p.join()
+
+
 #Appends data to the file created before
     def write100Hz(self):
         #getting the updated dictionaries from the dataFrame object
