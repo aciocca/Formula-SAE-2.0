@@ -76,7 +76,7 @@ scanCOMs():
             self.__bytesToRead=kwargs["bytesToRead"]
         else:
             self.__bytesToRead=1
-        
+
         self.__serialInstance = serial.Serial(port=self.__portName, baudrate=self.__baudRate, bytesize=self.__wordLength, parity=self.__wordParity, stopbits=self.__stopBit, timeout=self.__timeout)
         self.__serialInstance.close()
 
@@ -170,4 +170,5 @@ scanCOMs():
                 portList.append(portToCheck)
             except serial.SerialException:
                 pass
+        # portList.append("/dev/ttyACM0") # under linux there aren't COM serial
         return portList

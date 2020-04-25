@@ -1,4 +1,4 @@
-import csv, time
+import csv, time, os
 # from GUI.RealTime import DataFrame
 from FormatData import FormatData as fd
 from multiprocessing import Process, Pipe
@@ -76,8 +76,12 @@ class FileHandler:
         self.sh_fh_pipe = sh_fh_pipe
         self.fh_gui_pipe = fh_gui_pipe
 
+        # CREATE DIR IF NOT EXIST (RELATIVE_PATH)
+        if not os.path.exists(dir_):
+            os.makedirs(dir_)
+
     def openFile(self):
-        #CREATION OF THE dd_mm_yyyy_hh_mm_ss_100Hz.csv FILE
+        #CREATION OF THE dd_mm_yyyy_hh_mm_ss_100Hz.csv FILE        
         self.__file100Hz = open(self.__name100Hz, 'w', newline='')
         self.__writerFile100Hz = csv.writer(self.__file100Hz, delimiter=';', dialect='excel')
         self.__writerFile100Hz.writerow(list(self.__FrameValues100Hz.keys()))
