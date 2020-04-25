@@ -2,11 +2,14 @@ import serial
 from time import sleep
 from multiprocessing import Process, Pipe
 
-def f1(obj):
+#Routine che apre la connessione alla seriale e attraverso una pipe li spedisce al format data#
+def subProcessFunction(obj):
     obj.openPort()
 
     while True:
+        print("--- clock Serial Handler ---")
         dataReaded = obj.readData(startChar = b'\x02', endChar=b'\x03')
+        print("Process: ", dataReaded)
         # add logs
         obj.sh_fh_pipe.send(dataReaded)
 
@@ -80,7 +83,7 @@ scanCOMs():
         self.sh_fh_pipe = sh_fh_pipe
       
     def run(self):
-        self.p = Process(target=f1, args=(self,))
+        self.p = Process(target=subProcessFunction, args=(self,))
         self.p.start()
     
     def join(self):
