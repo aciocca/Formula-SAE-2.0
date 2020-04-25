@@ -8,10 +8,10 @@ def subProcessFunction(obj):
 
     while True:
         print("--- clock Serial Handler ---")
-        dataReaded = obj.readData(startChar = b'\x02', endChar=b'\x03')
-        print("Process: ", dataReaded)
+        pipeOutput = obj.readData(startChar = b'\x02', endChar=b'\x03')
+        print("Process: ", pipeOutput)
         # add logs
-        obj.sh_fh_pipe.send(dataReaded)
+        obj.sh_fh_pipe.send(pipeOutput)
 
     obj.closePort()
 

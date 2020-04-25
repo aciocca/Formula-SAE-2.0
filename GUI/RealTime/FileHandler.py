@@ -12,9 +12,9 @@ def subProcessFunction(obj):
     obj.openFile()
     while True:
         print("--- clock File Handler ---")
-        a = obj.sh_fh_pipe.recv()
-        print("Process: ", a)
-        fd.setData(obj.getDataFrame(), a, obj)
+        pipeInput = obj.sh_fh_pipe.recv()
+        print("Process: ", pipeInput)
+        fd.setData(obj.getDataFrame(), pipeInput, obj)
         # fh_gui.send(obj.getDataFrame())
 
 class FileHandler:
