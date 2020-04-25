@@ -10,12 +10,15 @@ from multiprocessing import Process, Pipe
 
 def subProcessFunction(obj):
     obj.openFile()
+
     while True:
         print("--- clock File Handler ---")
         pipeInput = obj.sh_fh_pipe.recv()
         print("Process: ", pipeInput)
         fd.setData(obj.getDataFrame(), pipeInput, obj)
         # fh_gui.send(obj.getDataFrame())
+    
+
 
 class FileHandler:
 
