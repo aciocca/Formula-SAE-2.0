@@ -1,0 +1,46 @@
+Allora soluzione definitiva ai problemi di import di python (e vscode)
+Ringrazio https://alex.dzyoba.com/blog/python-import/
+In particolare
+
+    Python has module search path available at runtime as sys.path
+    If you run a module as a script file, the containing directory is added to sys.path, otherwise, the current directory is added to it
+
+Quando avviamo il codice, aggiunge il path del file a sys.path per quell'istanza e gli import sono relativi a quel path.
+
+########### EXTRA SOLO PER VISUAL STUDIO CODE#########
+Inoltre Visual Studio Code fornisce come path a python quella del folder che hai aperto a lato, indipendentemente dal file che stai eseguendo.
+Mi spiego meglio:
+Prendiamo per esempio questi file
+.
+├── pizzapy
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── menu.py
+│   └── pizza.py
+└── pizzashop
+    ├── __init__.py
+    └── shop.py
+
+Se con visual studio code ho aperto il root del tree (il punto in alto), sia che lanci menu.py, sia che lanci shop.py, entrambe per vscode avranno un sys.path uguale al path di . (la directory aperta)
+Se invece vado ad aprire i file singolarmente da explorer, essi avranno rispettivamente come sys.path ./pizzapy/ e ./pizzashop/
+Questo però accade solo al lancio del modulo, quando scrivete il codice e provate ad importare un modulo tenendo conto della cosa di cui sopra, VSC ve lo segnerà come errore, anche se a runtime python non avrà problemi
+#########################################################
+
+Quindi come dobbiamo gestire gli import?
+
+        TUTTI GLI IMPORT DEVONO ESSERE SCRITTI RELATIVI ALLA ROOT DEL PROGRAMMA
+
+Ovvero, nel nostro caso, tutti dovranno essere relativi alla cartella GRIFFIN
+Importare DataFrame.py per esempio sarà 
+
+    from serialdata import DataFrame
+
+Sia che mi trovi su GRIFFIN/gui_griffin.py, sia che mi trovi in altre cartelle, come GRIFFIN/interfaces/serialinterface.py
+E questo ci porta al secondo punto, tutto il codice
+
+    DEVE ESSERE LANCIATO DALLA DIRECTORY PRINCIPALE
+
+ovvero GRIFFIN
+Ogni volta che eseguite qualcosa fate in modo che sia nella stessa cartella di gui_griffin.py, gui_logic.py ecc..
+Volete testare un modulo all'interno di una sottocartella?
+Create un metodo run() all'interno di quello e create un file test_nomemodulo.py all'interno di GRIFFIN, con gli import corretti ed eseguite nomemodulo.run()

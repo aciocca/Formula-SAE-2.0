@@ -76,12 +76,10 @@ L'MVC garantisce un'ottimo grado di modularità al codice, permettendo il lavoro
 	.........gui_griffin.py 		// Scheletro della gui, chiama lui tutti i moduli necessari per comporre la gui, le variabili dei dati della macchina fanno capo a lui, in quanto possono servire a più tab, ha lui il tk.root
 	.........gui_connectiontab.py	// Tab dalla quale avviare la connessione al seriale o chiuderla
 	.........gui_realtimetab.py		// Tab con i dati in tempo reale
-	.........gui_serialtab.py		// Tab con i dati per la connessione al seriale 
 	.........gui_****tab.py			// Tutte le altre tab avranno il loro rispettivo modulo
 	.........gui_logic.py			// Gestisce la logica della gui e le sue variabili(greyare out alcune funzioni quando non disponibili o viceversa), contiene la classe GUI_LOGIC_HANDLER che deve essere passata ad ogni tab del programma
-	.........defaults.py			// Raccoglie tutte le variabili globali del programma in un unico modulo, per poterle cambiare facilmente in caso di necessità
-	........./controller/
-	.....................serialinterface.py	// Chiamato da gui_serialtab.py, crea un oggetto serialhandler e lo passa a serialreader, si occupa anche di chiudere la connessione quando necessario
+	........./interfaces/
+	.....................serialinterface.py	// Chiamato da gui_logic.py, crea un oggetto serialhandler e lo passa a serialreader, si occupa anche di chiudere la connessione quando necessario
 	.....................datainterface.py	// Chiamato sia da gui_griffin.py per controllare se ci sono dati nuovi, sia da serialreader.py per segnalare che ha finito di aggiornare i dati
 	........./serialdata/
 	.....................serialreader.py	// Gli viene passato l'oggetto connessione e in un thread a parte legge il seriale di continuo, è suo il loop 3) di cui sopra
