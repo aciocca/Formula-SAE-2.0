@@ -78,6 +78,7 @@ class FileHandler:
         #Updating the "writing" dictionary with new values (a loop isn't used because three different frames are needed)
         self.__FrameValues100Hz["rpm"] = self.__engineFrame["rpm"]
         self.__FrameValues100Hz["tps"] = self.__engineFrame["tps"]
+        self.__FrameValues100Hz['gear'] = self.__engineFrame['gear']
         self.__FrameValues100Hz['accel_x'] = self.__gyroscopeFrame['accel_x']
         self.__FrameValues100Hz['accel_y'] = self.__gyroscopeFrame['accel_y']
         self.__FrameValues100Hz['accel_z'] = self.__gyroscopeFrame['accel_z']
@@ -95,7 +96,6 @@ class FileHandler:
         self.__FrameValues100Hz['vel_fdx'] = self.__wheelFrame['vel_fdx']
         self.__FrameValues100Hz['vel_rsx'] = self.__wheelFrame['vel_rsx']
         self.__FrameValues100Hz['vel_rdx'] = self.__wheelFrame['vel_rdx']
-        self.__FrameValues100Hz['gear'] = self.__wheelFrame['gear']
 
         #Writing the whole line in dd_mm_yyyy_hh_mm_ss_100Hz.csv file
         self.__writerFile100Hz.writerow(list(self.__FrameValues100Hz.values()))
