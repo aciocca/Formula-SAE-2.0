@@ -6,7 +6,7 @@ String textout;
 void setup() {
   
   //setup serial communications through the USB
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   //Let's make it more random
   randomSeed(42);   

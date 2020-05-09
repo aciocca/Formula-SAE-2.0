@@ -27,7 +27,7 @@ class GRIFFINGUI(tk.Frame):
         top_level_window.title("GRIFFIN 2020 Edition")
         top_level_window.aspect(4,3,4,3)
         top_level_window.protocol("WM_DELETE_WINDOW", self.onclose)
-        top_level_window.iconbitmap("res/griffin.ico")
+        top_level_window.iconbitmap("res/griffin_base.ico")
     
     def create_menubar(self):
         # Si occupa delle barre dei menu (5) per ulteriori info

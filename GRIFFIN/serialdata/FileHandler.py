@@ -1,24 +1,5 @@
-import csv, time, os
-# from GUI.RealTime import DataFrame
-from FormatData import FormatData as fd
-from multiprocessing import Process, Pipe
-
-# Sottoprocesso che legge i dati dalla pipe in arrivo dal SerialHandler;
-# Pulisce i dati e li formatta in dizionari attraverso il FormatData
-# I dati vengono salvati su gli appositi files per i dati a 100, 10, 4 Hz
-# TODO: implementare passaggio di dati tra FileHandler e classe della GUI #
-
-def subProcessFunction(obj):
-    obj.openFile()
-
-    while True:
-        print("--- clock File Handler ---")
-        pipeInput = obj.sh_fh_pipe.recv()
-        print("Process: ", pipeInput)
-        fd.setData(obj.getDataFrame(), pipeInput, obj)
-        # fh_gui.send(obj.getDataFrame())
-    
-
+import csv, time
+from serialdata import DataFrame
 
 class FileHandler:
 
@@ -48,40 +29,30 @@ class FileHandler:
 
 #Creates a FileHandler object to save data in a CSV file called "dd_mm_yyyy_hh_mm_ss.csv"
 
-    def __init__(self, dataFrame, sh_fh_pipe, fh_gui_pipe):
+    def __init__(self, dataFrame):
         self.__dataFrame = dataFrame
-        dir_ = "resources/"
         nome = time.strftime("%a_%d_%b_%Y") + "_" + time.strftime("%H_%M_%S_")
-        self.__name100Hz = dir_ + nome + "100Hz.csv"
-        self.__name10Hz = dir_ + nome + "10Hz.csv"
-        self.__name4Hz = dir_ + nome + "4Hz.csv"
+        self.__name100Hz = nome + "100Hz.csv"
+        self.__name10Hz = nome + "10Hz.csv"
+        self.__name4Hz = nome + "4Hz.csv"
        
-        # Getting dictionaries from a dataFrame object
+        #Getting dictionaries from a dataFrame object
         self.__engineFrame = self.__dataFrame.getEngineFrame()
         self.__wheelFrame = self.__dataFrame.getWheelSensorsFrame()
         self.__gyroscopeFrame = self.__dataFrame.getGyroscopeFrame()
         self.__GPSFrame = self.__dataFrame.getGPSFrame()
         
-        # Dictionaries used to write data inside the .csv file (sorted by frequency)
+        #Dictionaries used to write data inside the .csv file (sorted by frequency)
         self.__FrameValues100Hz = {'rpm': 0, 'tps': 0.0, 'accel_x': 0.0, 'accel_y': 0.0, 'accel_z': 0.0, 'gyro_x': 0.0, 'gyro_y': 0.0, 'gyro_z': 0.0, 'pot_fsx': 0.0, 'pot_fdx': 0.0, 'pot_FAccuracy': 0.0, 'pot_rsx': 0.0, 'pot_rdx': 0.0, 'pot_RAccuracy': 0.0,'steeringEncoder': 0.0, 'vel_fsx': 0.0, 'vel_fdx': 0.0, 'vel_rsx': 0.0, 'vel_rdx': 0.0, 'gear': 0}       
         self.__FrameValues10Hz = {'t_h20': 0, 't_air': 0, 't_oil': 0, 'vbb': 0.0, 'lambda1_avg': 0.0, 'lambda1_raw': 0.0, 'k_lambda1': 0.0, 'inj_low': 0.0, 'inj_high': 0.0}  
         self.__FrameValues4Hz = {'hour': 0, 'minutes': 0, 'seconds': 0, 'micro_seconds': 0.0, 'n_sats': 0, 'fixQuality': 0, 'e_w': "", 'n_s': "", 'hdop': 0.0, 'latitude': 0.0, 'longitude': 0.0, 'velGPS': 0.0}
                 
-        # LINES WRITTEN (USED TO KNOW THE FILE HAS TO BE CLOSED AND REOPENED)
+        #LINES WRITTEN (USED TO KNOW THE FILE HAS TO BE CLOSED AND REOPENED)
         self.__lineNumber100Hz = 0
         self.__lineNumber10Hz = 0
         self.__lineNumber4Hz = 0
 
-        # PIPES
-        self.sh_fh_pipe = sh_fh_pipe
-        self.fh_gui_pipe = fh_gui_pipe
-
-        # CREATE DIR IF NOT EXIST (RELATIVE_PATH)
-        if not os.path.exists(dir_):
-            os.makedirs(dir_)
-
-    def openFile(self):
-        #CREATION OF THE dd_mm_yyyy_hh_mm_ss_100Hz.csv FILE        
+        #CREATION OF THE dd_mm_yyyy_hh_mm_ss_100Hz.csv FILE
         self.__file100Hz = open(self.__name100Hz, 'w', newline='')
         self.__writerFile100Hz = csv.writer(self.__file100Hz, delimiter=';', dialect='excel')
         self.__writerFile100Hz.writerow(list(self.__FrameValues100Hz.keys()))
@@ -96,17 +67,7 @@ class FileHandler:
         self.__writerFile4Hz = csv.writer(self.__file4Hz, delimiter=';', dialect='excel')
         self.__writerFile4Hz.writerow(list(self.__FrameValues4Hz.keys()))
 
-    def run(self):
-        print("Funzione Run")
-        self.p = Process(target=subProcessFunction, args=(self,))
-        self.p.start()
-
-    def join(self):
-        self.p.join()
-
-    def getDataFrame(self):
-        return self.__dataFrame
-
+       
 #Appends data to the file created before
     def write100Hz(self):
         #getting the updated dictionaries from the dataFrame object
@@ -117,7 +78,6 @@ class FileHandler:
         #Updating the "writing" dictionary with new values (a loop isn't used because three different frames are needed)
         self.__FrameValues100Hz["rpm"] = self.__engineFrame["rpm"]
         self.__FrameValues100Hz["tps"] = self.__engineFrame["tps"]
-        self.__FrameValues100Hz['gear'] = self.__engineFrame['gear']
         self.__FrameValues100Hz['accel_x'] = self.__gyroscopeFrame['accel_x']
         self.__FrameValues100Hz['accel_y'] = self.__gyroscopeFrame['accel_y']
         self.__FrameValues100Hz['accel_z'] = self.__gyroscopeFrame['accel_z']
@@ -135,9 +95,7 @@ class FileHandler:
         self.__FrameValues100Hz['vel_fdx'] = self.__wheelFrame['vel_fdx']
         self.__FrameValues100Hz['vel_rsx'] = self.__wheelFrame['vel_rsx']
         self.__FrameValues100Hz['vel_rdx'] = self.__wheelFrame['vel_rdx']
-        self.__FrameValues100Hz['gear'] = self.__engineFrame['gear']
-
-
+        self.__FrameValues100Hz['gear'] = self.__wheelFrame['gear']
 
         #Writing the whole line in dd_mm_yyyy_hh_mm_ss_100Hz.csv file
         self.__writerFile100Hz.writerow(list(self.__FrameValues100Hz.values()))

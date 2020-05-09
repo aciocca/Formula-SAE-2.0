@@ -218,6 +218,9 @@ class Application(tk.Frame):
         self.portCombobox.grid(row = 2, column = 2, padx = 10)
         self.portCombobox.bind("<<ComboboxSelected>>", self.updateSerialButton)
 
+        if (len(self.refreshPorts()) > 0):
+            self.portCombobox.current(0)
+            self.serialButton.config(state = "normal")
 
     def createSerialOptions(self):
         self.advoptBool = tk.IntVar()
