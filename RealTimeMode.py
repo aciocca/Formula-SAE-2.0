@@ -8,14 +8,23 @@ import GUI.RealTime.DataFrame as DataFrame
 import GUI.RealTime.FormatData as FormatData
 import GUI.RealTime.FileHandler as FileHandler
 
-df = DataFrame.DataFrame()
-csvFile = FileHandler.FileHandler(df)
+from multiprocessing import Process, Pipe
+
+fh_sh_pipe, sh_fh_pipe = Pipe()
+gui_fh_pipe, fh_gui_pipe = Pipe()
 
 class Application(tk.Frame):
     #########
     # SETUP #
     #########
     def __init__(self, master = None):
+        # Creazione pipes di comunicazione
+        
+        
+        # inizializzazione del DataFrame con le opportune pipes
+        self.df = DataFrame.DataFrame()
+        self.csvFile = FileHandler.FileHandler(self.df, fh_sh_pipe, fh_gui_pipe)
+
         self.mysettings = settings.settings("temp")
         self.mysettings.loadSettings()
         # Crea il master e lo assegna come attributo della classe
@@ -23,6 +32,9 @@ class Application(tk.Frame):
         # Inizializzo i lavori del backend
         self.initializeSerial() #Mi crea un self.serialConnection
         # Inizio a disegnare la GUI
+
+        # run multiprocessing        
+        
         self.master = master
         tk.Frame.__init__(self, master)
         # Inizializza le var globali e le trasforma in StringVar
@@ -51,22 +63,28 @@ class Application(tk.Frame):
         print("Connecting to the serial using: ", self.mysettings.currentSettings())
         self.serialConnection = sh.SerialHandler(name = self.mysettings.getportname(),
                                                  baudrate = self.mysettings.getbaudrate(),
+                                                 sh_fh_pipe = sh_fh_pipe,
                                                  stopBit = self.mysettings.getstopbit(),
                                                  length = self.mysettings.getpacketlength(),
                                                  parity = self.mysettings.getparity(),
                                                  timeout = self.mysettings.getupdatetimeout(),
                                                  bytesToRead = self.mysettings.getbytestoread()
                                                 )
-        self.serialConnection.openPort()
+        #self.serialConnection.openPort() DEPRECATED, la porta la apre in automatico il SerialHandler
 
     def updateThread(self):
-        data = self.serialConnection.readData(startChar = b'\x02', endChar=b'\x03')
-        FormatData.FormatData.setData(df, data, csvFile)
+
+        # read from pipe
         
-        engineFrame=df.getEngineFrame()
-        GPSFrame=df.getGPSFrame()
-        wheelSensorsFrame=df.getWheelSensorsFrame()
-        gyroscopeFrame=df.getGyroscopeFrame()
+        #data = self.serialConnection.readData(startChar = b'\x02', endChar=b'\x03') DEPRECATED, la lettura è effettuata via Pipe
+        #FormatData.FormatData.setData(df, data, csvFile) DEPRECATED, la lettura è automatica nel FileHandler
+        
+        # engineFrame=df.getEngineFrame() DEPRECATED, la lettura è effettuata sotto dalla pipe in automatico
+        # GPSFrame=df.getGPSFrame() DEPRECATED, la lettura è effettuata sotto dalla pipe in automatico
+        # wheelSensorsFrame=df.getWheelSensorsFrame() DEPRECATED, la lettura è effettuata sotto dalla pipe in automatico
+        # gyroscopeFrame=df.getGyroscopeFrame() DEPRECATED, la lettura è effettuata sotto dalla pipe in automatico
+
+        engineFrame, GPSFrame, wheelSensorsFrame, gyroscopeFrame = gui_fh_pipe.recv()
         
         # EngineFrame
         globalstuff.rpm.set(engineFrame["rpm"])
