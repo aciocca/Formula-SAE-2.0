@@ -1,4 +1,4 @@
-from GUI.RealTime import FileHandler
+# from GUI.RealTime import FileHandler
 
 class FormatData:
 

@@ -1,5 +1,19 @@
 import serial
 from time import sleep
+from multiprocessing import Process, Pipe
+
+#Routine che apre la connessione alla seriale e attraverso una pipe li spedisce al format data#
+def subProcessFunction(obj):
+    obj.openPort()
+
+    while True:
+        print("--- clock Serial Handler ---")
+        pipeOutput = obj.readData(startChar = b'\x02', endChar=b'\x03')
+        print("Process: ", pipeOutput)
+        # add logs
+        obj.sh_fh_pipe.send(pipeOutput)
+
+    obj.closePort()
 
 class SerialHandler:
 
@@ -34,7 +48,7 @@ class SerialHandler:
 scanCOMs():
     return a list that contains the available ports (WORKS ONLY WITH WINDOWS O.S.)'''
 
-    def __init__(self, name, baudrate, **kwargs):
+    def __init__(self, name, baudrate, sh_fh_pipe,**kwargs):
         self.__portName=name
         self.__baudRate=baudrate
 
@@ -62,10 +76,19 @@ scanCOMs():
             self.__bytesToRead=kwargs["bytesToRead"]
         else:
             self.__bytesToRead=1
-        
+
         self.__serialInstance = serial.Serial(port=self.__portName, baudrate=self.__baudRate, bytesize=self.__wordLength, parity=self.__wordParity, stopbits=self.__stopBit, timeout=self.__timeout)
         self.__serialInstance.close()
+
+        self.sh_fh_pipe = sh_fh_pipe
+      
+    def run(self):
+        self.p = Process(target=subProcessFunction, args=(self,))
+        self.p.start()
     
+    def join(self):
+        self.p.join()
+
     def readData(self, **kwargs):
         messageRead = bytes()
         if "size" in kwargs.keys():
@@ -147,4 +170,5 @@ scanCOMs():
                 portList.append(portToCheck)
             except serial.SerialException:
                 pass
+        # portList.append("/dev/ttyACM0") # under linux there aren't COM serial
         return portList
