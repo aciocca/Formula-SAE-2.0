@@ -1,8 +1,7 @@
 from multiprocessing import Process, Pipe
-
-from DataFrame import DataFrame
-from SerialHandler import SerialHandler as sr
-from FileHandler import FileHandler
+from serialdata.DataFrame import DataFrame
+from serialdata.SerialHandler import SerialHandler as sr
+from serialdata.FileHandler import FileHandler
 
 class Controller(object):
     
@@ -14,8 +13,16 @@ class Controller(object):
         self.__fh_sh_pipe, self.__sh_fh_pipe = Pipe()
         self.__gui_fh_pipe, self.__fh_gui_pipe = Pipe()
 
+
+
+    def start_serial_connection(self, serial_dict):
         # oggetti che rappresentano la logica dei processi che andranno ad essere parallelizzati
-        self.__seriale = sr(sr.scanCOMs()[0], 115200, self.__sh_fh_pipe)
+        # TODO: aggiungere altri dati da serial_dict
+        # struttura serial_dict
+        # connection_parameters = {"portname": self.portCombobox.get(), "baudrate": self.baudrateEntry.get(), "bytestoread": self.bytesEntry.get(),
+        #                         "length": self.lengthEntry.get(), "parity": self.parityEntry.get(), "stopbit": self.sbEntry.get(), "timeout": self.timeoutEntry.get()}
+        
+        self.__seriale = sr(serial_dict["portname"], serial_dict["baudrate"], self.__sh_fh_pipe)
         self.__fh = FileHandler(self.__df, self.__fh_sh_pipe, self.__fh_gui_pipe)
 
         self.__seriale.run()
@@ -23,6 +30,11 @@ class Controller(object):
 
         # self.__seriale.join()
         # self.__fh.join()
+    
+    def check_avaible_ports(self):
+        port_list = sr.scanCOMs()
+        return port_list
+
 
     def getGUIPipe(self):
         return self.__gui_fh_pipe

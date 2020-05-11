@@ -1,6 +1,6 @@
 import csv, time, os
 # from GUI.RealTime import DataFrame
-from FormatData import FormatData as fd
+from serialdata.FormatData import FormatData as fd
 from multiprocessing import Process, Pipe
 
 # Sottoprocesso che legge i dati dalla pipe in arrivo dal SerialHandler;
@@ -136,8 +136,7 @@ class FileHandler:
         self.__FrameValues100Hz['vel_fdx'] = self.__wheelFrame['vel_fdx']
         self.__FrameValues100Hz['vel_rsx'] = self.__wheelFrame['vel_rsx']
         self.__FrameValues100Hz['vel_rdx'] = self.__wheelFrame['vel_rdx']
-        self.__FrameValues100Hz['gear'] = self.__engineFrame['gear']
-
+        
         #Writing the whole line in dd_mm_yyyy_hh_mm_ss_100Hz.csv file
         self.__writerFile100Hz.writerow(list(self.__FrameValues100Hz.values()))
 

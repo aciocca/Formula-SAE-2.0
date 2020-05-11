@@ -1,0 +1,28 @@
+Dal view creo oggetto controller passando seriale e dati seriale
+Controller si crea un df per passare i datiù
+Controller crea le pipe
+
+Controller crea oggetto serialhandler per comunicazione usando dati dal view e gli da la pipe da attaccare al filehandler (sh_fh)
+riga 79 SerialHandler.py -- Close corretto? - riapre poi in subProcessFunction
+
+Controller crea FileHandler, gli da il dataframe, una end della pipe fh_sh, una end della pipe fh_gui
+FileHandler si assegna il dataframe, crea nome e dir per i file
+FileHandler di prende di dict dal dataframe
+FileHandler si crea tre dict in base agli Hz per scrivere poi su file
+FileHandler tiene conto delle linee scritte sul file per sapere quando salvare su disco
+FileHandler si assegna le pipe
+
+Controller avvia SerialHandler
+SerialHandler crea un Process e lo avvia, passandogli la porta come argomento
+Il subprocess riapre la porta e in while True inizia a leggere i dati con startchar ed endchar -D LEGARLO A VARIABILI!!!!!!
+Il subprocess manda tutto alla pipe sh_fh
+LEGARE USCITA DAL WHILE A VARIABILE!!!!!
+Il subprocess chiude la porta e termina (solo quando si corregge il while)
+
+Controller avvia FileHandler
+FileHandler crea un Process e lo avvia, dandogli self come argomento
+Il subprocess fa openfile e apre i 3 file necessari dove salvare i dati ---D ASSEGNARE I DATI DI SALVATAGGIO A DELLE VARIABILI
+Il subprocess entra in loop e aspetta dati dalla pipe fh_sh
+Il subprocess prende i dati della pipe, li traduce e li mette nel dataframe
+Il subprocess sono mandati come tupla a bordo di 3 dizionari (100/10/4hz) sulla pipe fh_gui
+

@@ -10,6 +10,7 @@ def subProcessFunction(obj):
         pipeOutput = obj.readData(startChar = b'\x02', endChar=b'\x03')
         # add logs
         obj.sh_fh_pipe.send(pipeOutput)
+        sleep(0.01)
 
     obj.closePort()
 
@@ -68,7 +69,7 @@ scanCOMs():
         if "timeout" in kwargs.keys():
             self.__timeout=kwargs["timeout"]
         else:
-            self.__timeout=600/self.__baudRate
+            self.__timeout=5
         
         if "bytesToRead" in kwargs.keys():
             self.__bytesToRead=kwargs["bytesToRead"]
