@@ -13,12 +13,10 @@ def subProcessFunction(obj):
 
     while True:
         # Lettura dei dati dal serial handler tramite le pipes
-        print("--- clock File Handler ---")
-        pipeInput = obj.sh_fh_pipe.recv()
-        print("Process: ", pipeInput)
+        pipeInput = obj.fh_sh_pipe.recv()
         # Pulitura dei dati tramite l'uso del FormatData
         fd.setData(obj.getDataFrame(), pipeInput, obj)
-        # I dati sono passati sotto forma di dizionari accodati l'uno all'altro
+        # I dati sono passati sotto forma di dizionari parsati come tupla
         tuple_out = (obj.get100HzDict(), obj.get10HzDict(), obj.get4HzDict())
         obj.fh_gui_pipe.send(tuple_out)
         # Per leggere correttamente i dati
@@ -52,9 +50,9 @@ class FileHandler:
 
 #Creates a FileHandler object to save data in a CSV file called "dd_mm_yyyy_hh_mm_ss.csv"
 
-    def __init__(self, dataFrame, sh_fh_pipe, fh_gui_pipe):
+    def __init__(self, dataFrame, fh_sh_pipe, fh_gui_pipe):
         self.__dataFrame = dataFrame
-        dir_ = "resources/"
+        dir_ = "logs_csv/"
         nome = time.strftime("%a_%d_%b_%Y") + "_" + time.strftime("%H_%M_%S_")
         self.__name100Hz = dir_ + nome + "100Hz.csv"
         self.__name10Hz = dir_ + nome + "10Hz.csv"
@@ -77,7 +75,7 @@ class FileHandler:
         self.__lineNumber4Hz = 0
 
         # PIPES
-        self.sh_fh_pipe = sh_fh_pipe
+        self.fh_sh_pipe = fh_sh_pipe
         self.fh_gui_pipe = fh_gui_pipe
 
         # CREATE DIR IF NOT EXIST (RELATIVE_PATH)
@@ -101,7 +99,6 @@ class FileHandler:
         self.__writerFile4Hz.writerow(list(self.__FrameValues4Hz.keys()))
 
     def run(self):
-        print("Funzione Run")
         self.p = Process(target=subProcessFunction, args=(self,))
         self.p.start()
 

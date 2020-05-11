@@ -7,9 +7,7 @@ def subProcessFunction(obj):
     obj.openPort()
 
     while True:
-        print("--- clock Serial Handler ---")
         pipeOutput = obj.readData(startChar = b'\x02', endChar=b'\x03')
-        print("Process: ", pipeOutput)
         # add logs
         obj.sh_fh_pipe.send(pipeOutput)
 
@@ -162,13 +160,13 @@ scanCOMs():
     @classmethod
     def scanCOMs(cls):
         portList = []
-        for i in range(255):
-            try:
-                portToCheck = 'COM' + str(i)
-                s = serial.Serial(portToCheck)
-                s.close()
-                portList.append(portToCheck)
-            except serial.SerialException:
-                pass
-        # portList.append("/dev/ttyACM0") # under linux there aren't COM serial
+        # for i in range(255):
+        #     try:
+        #         portToCheck = 'COM' + str(i)
+        #         s = serial.Serial(portToCheck)
+        #         s.close()
+        #         portList.append(portToCheck)
+        #     except serial.SerialException:
+        #         pass
+        portList.append("/dev/ttyACM0") # under linux there aren't COM serial
         return portList
