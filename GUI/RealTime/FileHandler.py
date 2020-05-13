@@ -51,10 +51,10 @@ class FileHandler:
     def __init__(self, dataFrame, sh_fh_pipe, fh_gui_pipe):
         self.__dataFrame = dataFrame
         dir_ = "resources/"
-        nome = time.strftime("%a_%d_%b_%Y") + "_" + time.strftime("%H_%M_%S_")
-        self.__name100Hz = dir_ + nome + "100Hz.csv"
-        self.__name10Hz = dir_ + nome + "10Hz.csv"
-        self.__name4Hz = dir_ + nome + "4Hz.csv"
+        name = time.strftime("%a_%d_%b_%Y") + "_" + time.strftime("%H_%M_%S_")
+        self.__name100Hz = dir_ + name + "100Hz.csv"
+        self.__name10Hz = dir_ + name + "10Hz.csv"
+        self.__name4Hz = dir_ + name + "4Hz.csv"
        
         # Getting dictionaries from a dataFrame object
         self.__engineFrame = self.__dataFrame.getEngineFrame()
@@ -83,17 +83,17 @@ class FileHandler:
     def openFile(self):
         #CREATION OF THE dd_mm_yyyy_hh_mm_ss_100Hz.csv FILE        
         self.__file100Hz = open(self.__name100Hz, 'w', newline='')
-        self.__writerFile100Hz = csv.writer(self.__file100Hz, delimiter=';', dialect='excel')
+        self.__writerFile100Hz = csv.writer(self.__file100Hz, delimiter=',', dialect='excel')
         self.__writerFile100Hz.writerow(list(self.__FrameValues100Hz.keys()))
         
         #CREATION OF THE dd_mm_yyyy_hh_mm_ss_10Hz.csv FILE
         self.__file10Hz = open(self.__name10Hz, 'w', newline='')
-        self.__writerFile10Hz = csv.writer(self.__file10Hz, delimiter=';', dialect='excel')
+        self.__writerFile10Hz = csv.writer(self.__file10Hz, delimiter=',', dialect='excel')
         self.__writerFile10Hz.writerow(list(self.__FrameValues10Hz.keys()))
         
         #CREATION OF THE dd_mm_yyyy_hh_mm_ss_4Hz.csv FILE
         self.__file4Hz = open(self.__name4Hz, 'w', newline='')
-        self.__writerFile4Hz = csv.writer(self.__file4Hz, delimiter=';', dialect='excel')
+        self.__writerFile4Hz = csv.writer(self.__file4Hz, delimiter=',', dialect='excel')
         self.__writerFile4Hz.writerow(list(self.__FrameValues4Hz.keys()))
 
     def run(self):
@@ -147,7 +147,7 @@ class FileHandler:
         if (self.__lineNumber100Hz==0):
             self.__file100Hz.close()
             self.__file100Hz = open(self.__name100Hz, 'a', newline='')
-            self.__writerFile100Hz = csv.writer(self.__file100Hz, delimiter=';', dialect='excel')
+            self.__writerFile100Hz = csv.writer(self.__file100Hz, delimiter=',', dialect='excel')
 
     def write10Hz(self):
         #getting the updated dictionariy from the dataFrame object (only engineFrame is needed)
@@ -165,7 +165,7 @@ class FileHandler:
         if (self.__lineNumber10Hz==0):
             self.__file10Hz.close()
             self.__file10Hz = open(self.__name10Hz, 'a', newline='')
-            self.__writerFile10Hz = csv.writer(self.__file10Hz, delimiter=';', dialect='excel')
+            self.__writerFile10Hz = csv.writer(self.__file10Hz, delimiter=',', dialect='excel')
     
     def write4Hz(self):
         #getting the updated dictionariy from the dataFrame object (only GPSFrame is needed)
@@ -183,7 +183,7 @@ class FileHandler:
         if (self.__lineNumber4Hz==0):
             self.__file4Hz.close()
             self.__file4Hz = open(self.__name4Hz, 'a', newline='')
-            self.__writerFile4Hz = csv.writer(self.__file4Hz, delimiter=';', dialect='excel')
+            self.__writerFile4Hz = csv.writer(self.__file4Hz, delimiter=',', dialect='excel')
     
     #if the headerIndex has been received writes "ReadError" in the whole line of the file. If not received, "ReadError" will be written in the last line of each file
     def writeReadError(self, *args):
