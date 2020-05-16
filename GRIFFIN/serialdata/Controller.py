@@ -10,6 +10,13 @@ class Controller(object):
         self.__df = DataFrame() # oggetto DataFrame comune
 
         # pipes di comunicazione tra i processi
+
+        # NOTA DALLA DOCUMENTAZIONE UFFICIALE, FINCHE ABBIAMO IN LETTURA E SCRITTURA UN SOLO PROCESSO SU OGNI END E' UN UTILIZZO PROCESS SAFE
+        # Note that data in a pipe may become corrupted if two processes 
+        # (or threads) try to read from or write to the same end of the pipe 
+        # at the same time. Of course there is no risk of corruption from processes 
+        # using different ends of the pipe at the same time.
+
         self.__fh_sh_pipe, self.__sh_fh_pipe = Pipe()
         self.__gui_fh_pipe, self.__fh_gui_pipe = Pipe()
 
