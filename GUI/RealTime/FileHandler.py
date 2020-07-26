@@ -1,6 +1,6 @@
 import csv, time, os
 # from GUI.RealTime import DataFrame
-from FormatData import FormatData as fd
+from GUI.RealTime.FormatData import FormatData as fd
 from multiprocessing import Process, Pipe
 
 # Sottoprocesso che legge i dati dalla pipe in arrivo dal SerialHandler;
@@ -15,10 +15,14 @@ def subProcessFunction(obj):
         print("--- clock File Handler ---")
         pipeInput = obj.sh_fh_pipe.recv()
         print("Process: ", pipeInput)
-        fd.setData(obj.getDataFrame(), pipeInput, obj)
-        # fh_gui.send(obj.getDataFrame())
+        df = obj.getDataFrame()
+        fd.setData(df, pipeInput, obj)
+        engineFrame=df.getEngineFrame()
+        GPSFrame=df.getGPSFrame()
+        wheelSensorsFrame=df.getWheelSensorsFrame()
+        gyroscopeFrame=df.getGyroscopeFrame()
+        obj.fh_gui_pipe.send((engineFrame, GPSFrame, wheelSensorsFrame, gyroscopeFrame))
     
-
 
 class FileHandler:
 

@@ -85,11 +85,11 @@ class GRIFFINGUI(tk.Frame):
 
     
     
-def runGUI():
+def run_gui():
     root = tk.Tk()
     GRIFFINGUI(root)
     root.mainloop()
 
 if __name__ == "__main__":
-    runGUI()
+    run_gui()
     

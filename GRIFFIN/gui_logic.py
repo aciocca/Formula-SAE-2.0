@@ -1,17 +1,22 @@
 import tkinter as tk
 from tkinter.font import Font
+from serialdata import Controller
+from time import sleep
+
 class GUI_LOGIC_HANDLER():
     def __init__(self, master):
+        self.master = master
+        self.controller_object = Controller.Controller()
         self.status = tk.StringVar(master)
         self.status.set("Offline")
-        GUI_LOGIC_HANDLER.initialize_dictionaries(self, master)
+        self.update = True
+        GUI_LOGIC_HANDLER.initialize_dictionaries(self, self.master)
         GUI_LOGIC_HANDLER.font_variables(self)
         
     def font_variables(self):
         self.bold = Font(weight = "bold", size = 12)
     
     def initialize_dictionaries(self, master):
-        # Funzione a parte per miglior ordine
         self.rpm = tk.StringVar(master)
         self.tps = tk.StringVar(master)
         self.t_h20 = tk.StringVar(master)
@@ -51,7 +56,7 @@ class GUI_LOGIC_HANDLER():
         self.gyro_z = tk.StringVar(master)
         self.accel_x = tk.StringVar(master)
         self.accel_y = tk.StringVar(master)
-        self.accel_z = tk.StringVar(master)    
+        self.accel_z = tk.StringVar(master)   
     
     def go_online(self):
         self.status.set("Online!")
@@ -79,21 +84,75 @@ class GUI_LOGIC_HANDLER():
         connect_button.config(state = "normal")
 
     def check_ports(self, port_combobox):
-        #portlist = control.checkavaibleports()
-        portlist = ["test", "test2", "test3", "test4"]
-        port_combobox.config(values = portlist)
+        ports_list = self.controller_object.check_avaible_ports()
+        port_combobox.config(values = ports_list)
 
-    def start_serial_connection(self, connection_dictionary, connect_button, disconnect_button):
-        print(connection_dictionary)
-        #control_startserial(nome, baudrate, stopbit ecc ecc)
+    def start_serial_connection(self, serial_dict, connect_button, disconnect_button):
+        # Viene chiamato da gui_connectiontab
+        print(serial_dict)
+        self.controller_object.start_serial_connection(serial_dict)
+        self.fh_gui_pipe = self.controller_object.getGUIPipe()
         connect_button.config(state = "disabled")
         # TODO gestione connessione fallita
         GUI_LOGIC_HANDLER.go_online(self)
         disconnect_button.config(state = "normal")
+        GUI_LOGIC_HANDLER.update_loop(self)
+
+
 
     def stop_serial_connection(self, connect_button, disconnect_button):
         print("disconnected")
         connect_button.config(state = "normal")
         GUI_LOGIC_HANDLER.go_offline(self)
         disconnect_button.config(state = "disabled")
+    
+    def update_loop(self):
+    
+        dict_100hz, dict_10hz, dict_4hz = self.fh_gui_pipe.recv()
+        
+        # 100Hz
+        self.rpm.set(dict_100hz["rpm"])
+        self.tps.set(dict_100hz["tps"])
+        self.gear.set(dict_100hz["gear"])
+        self.accel_x.set(dict_100hz["accel_x"])
+        self.accel_y.set(dict_100hz["accel_y"])
+        self.accel_z.set(dict_100hz["accel_z"])
+        self.gyro_x.set(dict_100hz["gyro_x"])
+        self.gyro_y.set(dict_100hz["gyro_y"])
+        self.gyro_z.set(dict_100hz["gyro_z"])
+        self.vel_fsx.set(dict_100hz["vel_fsx"])
+        self.vel_fdx.set(dict_100hz["vel_fdx"])
+        self.vel_rsx.set(dict_100hz["vel_rsx"])
+        self.vel_rdx.set(dict_100hz["vel_rdx"])
+        self.pot_fdx.set(dict_100hz["pot_fdx"])
+        self.pot_fsx.set(dict_100hz["pot_fsx"])
+        self.pot_rsx.set(dict_100hz["pot_rsx"])
+        self.pot_rdx.set(dict_100hz["pot_rdx"])
+        self.potFAccuracy.set(dict_100hz["potFAccuracy"])
+        self.potRAccuracy.set(dict_100hz["potRAccuracy"])
+        self.steeringEncoder.set(dict_100hz["steeringEncoder"])
+        
+        # 10Hz
+        self.t_h20.set(dict_10hz["t_h20"])
+        self.t_air.set(dict_10hz["t_air"])
+        self.t_oil.set(dict_10hz["t_oil"])
+        self.vbb.set(dict_10hz["vbb"])
+        self.lambda1_avg.set(dict_10hz["lambda1_avg"])
+        self.lambda1_raw.set(dict_10hz["lambda1_raw"])
+        self.k_lambda1.set(dict_10hz["k_lambda1"])
+        self.inj_low.set(dict_10hz["inj_low"])
+        self.inj_high.set(dict_10hz["inj_high"])
+
+        # 4Hz
+        self.n_s.set(dict_4hz["n_s"])
+        self.e_w.set(dict_4hz["e_w"])
+        self.fixQuality.set(dict_4hz["fixQuality"])
+        self.n_sats.set(dict_4hz["n_sats"])
+        self.hdop.set(dict_4hz["hdop"])
+        self.latitude.set(dict_4hz["latitude"])
+        self.longitude.set(dict_4hz["longitude"])
+        self.velGPS.set(dict_4hz["velGPS"])
+        self.master.after(1, self.update_loop)
+        
+        
 
