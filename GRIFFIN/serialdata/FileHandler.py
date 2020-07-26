@@ -65,7 +65,7 @@ class FileHandler:
         self.__GPSFrame = self.__dataFrame.getGPSFrame()
         
         # Dictionaries used to write data inside the .csv file (sorted by frequency)
-        self.__FrameValues100Hz = {'rpm': 0, 'tps': 0.0, 'accel_x': 0.0, 'accel_y': 0.0, 'accel_z': 0.0, 'gyro_x': 0.0, 'gyro_y': 0.0, 'gyro_z': 0.0, 'pot_fsx': 0.0, 'pot_fdx': 0.0, 'pot_FAccuracy': 0.0, 'pot_rsx': 0.0, 'pot_rdx': 0.0, 'pot_RAccuracy': 0.0,'steeringEncoder': 0.0, 'vel_fsx': 0.0, 'vel_fdx': 0.0, 'vel_rsx': 0.0, 'vel_rdx': 0.0, 'gear': 0}       
+        self.__FrameValues100Hz = {'rpm': 0, 'tps': 0.0, 'accel_x': 0.0, 'accel_y': 0.0, 'accel_z': 0.0, 'gyro_x': 0.0, 'gyro_y': 0.0, 'gyro_z': 0.0, 'pot_fsx': 0.0, 'pot_fdx': 0.0, 'potFAccuracy': 0.0, 'pot_rsx': 0.0, 'pot_rdx': 0.0, 'potRAccuracy': 0.0, 'steeringEncoder': 0.0, 'vel_fsx': 0.0, 'vel_fdx': 0.0, 'vel_rsx': 0.0, 'vel_rdx': 0.0, 'gear': 0}       
         self.__FrameValues10Hz = {'t_h20': 0, 't_air': 0, 't_oil': 0, 'vbb': 0.0, 'lambda1_avg': 0.0, 'lambda1_raw': 0.0, 'k_lambda1': 0.0, 'inj_low': 0.0, 'inj_high': 0.0}  
         self.__FrameValues4Hz = {'hour': 0, 'minutes': 0, 'seconds': 0, 'micro_seconds': 0.0, 'n_sats': 0, 'fixQuality': 0, 'e_w': "", 'n_s': "", 'hdop': 0.0, 'latitude': 0.0, 'longitude': 0.0, 'velGPS': 0.0}
                 

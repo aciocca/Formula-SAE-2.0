@@ -1,0 +1,4 @@
+TODO:
+Fixare il freeze in caso di selezione COM sbagliata
+Inserire valori di default per la baudrate
+Disconnect funzionante

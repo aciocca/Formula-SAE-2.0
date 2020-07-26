@@ -1,0 +1,8 @@
+{
+    "python.pythonPath": "C:\\Users\\Ciocca\\griffin\\Scripts\\python.exe",
+    "python.autoComplete.extraPaths": ["C:\\Users\\Ciocca\\griffin\\Lib\\site-packages"],
+    "python.linting.pylintPath": "C:\\Users\\Ciocca\\griffin\\Scripts\\pylint.exe",
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true
+}
